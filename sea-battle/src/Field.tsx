@@ -1,9 +1,14 @@
-export class Field {
+import { makeObservable, observable } from "mobx";
+import { IField } from "./interfaces";
 
-    field: number[][]
+export class Field implements IField {
+
+    field
 
     constructor() {
         this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
+        makeObservable(this, 
+            {field: observable})
     }
 
     addShip(size: number) {
@@ -93,3 +98,5 @@ export class Field {
     }
 
 }
+
+export const map = new Field()

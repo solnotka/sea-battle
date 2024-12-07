@@ -1,9 +1,14 @@
-import { Field } from "./Field";
+import { useEffect } from "react";
+import { map } from "./Field";
 import { Box } from 'grommet'
+import { observer } from "mobx-react-lite";
 
-export const FieldView = () => {
-    const fieldInit = new Field();
-    const fieldArray = fieldInit.setField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+export const FieldView = observer (() => {
+    useEffect(()=>{
+        // map.setField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+    }, [])
+    
+    
     const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
     const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -13,7 +18,7 @@ export const FieldView = () => {
                 {fieldLeft.map((item, index) => {
                     return (
                         <Box
-                            className="Field-item Field-left"
+                            className="field-item field-left"
                             key={index}
                             style = {{
                                 borderTop: index===0 ? 0 : "1px solid rgb(6, 2, 49)",
@@ -26,7 +31,7 @@ export const FieldView = () => {
                 })}
             </Box>
             <Box
-                className="Field"
+                className="field"
                 direction="column"
             >
                 <Box
@@ -35,7 +40,7 @@ export const FieldView = () => {
                         fieldHead.map((item, index) => {
                             return (
                                 <Box
-                                    className="Field-item Field-top"
+                                    className="field-item field-top"
                                     key={index}
                                     style = {{
                                         borderRight: index===(fieldHead.length - 1) ? 0 : "1px solid rgb(6, 2, 49)",
@@ -47,7 +52,7 @@ export const FieldView = () => {
                         })}
                 </Box>
                 {
-                    fieldArray.map((item, rowIndex) => {
+                    map.field.map((item, rowIndex) => {
                         return (
                             <Box
                                 key={rowIndex}
@@ -56,7 +61,7 @@ export const FieldView = () => {
                                 {item.map((i, columnIndex) => {
                                     return (
                                         <Box
-                                            className="Field-item"
+                                            className="field-item"
                                             key={rowIndex * 10 + columnIndex}
                                             style={{ backgroundColor: i ? "rgb(6, 2, 49)" : "white" }}
                                         />
@@ -68,4 +73,4 @@ export const FieldView = () => {
             </Box >
         </Box >
     )
-}
+})

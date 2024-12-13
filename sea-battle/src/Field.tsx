@@ -1,14 +1,69 @@
-import { makeObservable, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { IField } from "./interfaces";
 
 export class Field implements IField {
 
-    field
+    field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
 
     constructor() {
-        this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
         makeObservable(this,
-            { field: observable })
+            {
+                field: observable,
+                shipCount: computed
+            })
+    }
+
+    get shipCount() {
+
+        let shipMap: Record<number | string, number> = {};
+        let count = 0;
+        let size = 0;
+
+        for (let row = 0; row < 10; row++) {
+            for (let col = 0; col < 10; col++) {
+                if (this.field[row][col] === 1) {
+                    // Если это вертикальный корабль и ниже он продолжается, то его пока пропускаем. Обработаем на последней клеточке
+                    if (row < 9 && this.field[row + 1][col] === 1) {
+                        continue
+                    } else {
+                        // Тут обрабатываем вертикальные корабли на их последних клеточках
+                        if (row > 0 && this.field[row - 1][col] === 1) {
+                            count++
+
+                            let verticalSize = 1;
+                            let newRow = row - 1
+
+                            while (this.field[newRow][col] === 1 && newRow >= 0) {
+                                verticalSize++
+                                newRow--
+                            }
+
+
+                            if (shipMap[verticalSize]) {
+                                shipMap[verticalSize]++
+                            } else shipMap[verticalSize] = 1
+                            // Тут у нас единички и горизонтальные корабли
+                        } else {
+
+                            size++
+
+                            if (col === 9 || this.field[row][col + 1] === 0) {
+                                count++
+
+                                if (shipMap[size]) {
+                                    shipMap[size]++
+                                } else shipMap[size] = 1
+
+                                size = 0;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        console.log(shipMap)
+        return count
     }
 
     addShip(size: number) {
@@ -43,7 +98,6 @@ export class Field implements IField {
                 this.field[row][i] = 1;
             }
         }
-        console.log(`Добавлен корабль размера ${size}. Параметры: ${direction}, ${row}, ${column}`);
         return this.field;
     }
 
@@ -83,8 +137,7 @@ export class Field implements IField {
                 }
             }
 
-        } else console.log("Тут пусто")
-        console.log(this.field[row])
+        }
     }
 
     //Это проверка, что корабль есть куда ставить
@@ -140,7 +193,6 @@ export class Field implements IField {
 
     clearField() {
         this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
-        console.log("На поле больше нет кораблей")
     }
 
 }

@@ -5,4 +5,5 @@ export interface IField {
     checkSpace: (row: number, column: number, size: number, direction: string) => void,
     changeField: (arr: number[]) => void,
     clearField: ()=> void
+    shipCount: number
 }

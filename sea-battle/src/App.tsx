@@ -23,7 +23,7 @@ export const App = ()=> {
             onClick={() => {
               currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
             }}
-            label="Добавить 4-3-3-2-2-2-1-1-1-1"
+            label="Сделать 4-3-3-2-2-2-1-1-1-1"
           />
           <PrimaryButton
             onClick={() => {

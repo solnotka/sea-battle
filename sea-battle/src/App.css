@@ -27,3 +27,8 @@
 .field-left {
   border-left: 0;
 }
+
+.info {
+  align-items: start;
+  font-size: medium;
+}

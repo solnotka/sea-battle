@@ -9,7 +9,8 @@ export class Field implements IField {
         makeObservable(this,
             {
                 field: observable,
-                shipCount: computed
+                shipCount: computed,
+                shipCountReport: computed
             })
     }
 
@@ -33,7 +34,7 @@ export class Field implements IField {
                             let verticalSize = 1;
                             let newRow = row - 1
 
-                            while (this.field[newRow][col] === 1 && newRow >= 0) {
+                            while ( newRow >= 0 && this.field[newRow][col] === 1 )  {
                                 verticalSize++
                                 newRow--
                             }
@@ -42,11 +43,13 @@ export class Field implements IField {
                             if (shipMap[verticalSize]) {
                                 shipMap[verticalSize]++
                             } else shipMap[verticalSize] = 1
+                            
                             // Тут у нас единички и горизонтальные корабли
                         } else {
 
                             size++
 
+                            // Проверяем, что корабль заканчивается на этой клеточке
                             if (col === 9 || this.field[row][col + 1] === 0) {
                                 count++
 
@@ -62,8 +65,22 @@ export class Field implements IField {
                 }
             }
         }
-        console.log(shipMap)
-        return count
+        shipMap["all"] = count 
+        return shipMap
+    }
+
+    get shipCountReport() {
+        let reportArr = [`Всего кораблей: ${this.shipCount["all"]}`];
+        
+        for (let key in this.shipCount) {
+            if (key === "all") {
+                continue
+            } else {
+                reportArr.push(`Кораблей размера ${key}: ${this.shipCount[key]}`)
+            }
+        }
+        
+        return reportArr
     }
 
     addShip(size: number) {

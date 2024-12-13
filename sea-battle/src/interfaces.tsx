@@ -4,6 +4,7 @@ export interface IField {
     removeShip: (row: number, column: number) => void,
     checkSpace: (row: number, column: number, size: number, direction: string) => void,
     changeField: (arr: number[]) => void,
-    clearField: ()=> void
-    shipCount: number
+    clearField: ()=> void,
+    shipCount: Record<number | string, number>,
+    shipCountReport: string[]
 }

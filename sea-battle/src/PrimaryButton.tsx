@@ -8,6 +8,7 @@ export const PrimaryButton = ( { onClick, label }: { onClick: ()=>void, label: s
         primary
         hoverIndicator
         size="medium"
+        // style={{width:"210px"}}
         color="rgb(6, 2, 49)"
         margin="medium"
         onClick={onClick}

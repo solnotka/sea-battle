@@ -1,13 +1,8 @@
-import { useEffect } from "react";
-import { map } from "./Field";
+import { currentField } from "./Field";
 import { Box } from 'grommet'
 import { observer } from "mobx-react-lite";
 
 export const FieldView = observer (() => {
-    useEffect(()=>{
-        // map.setField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
-    }, [])
-    
     
     const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
     const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -52,7 +47,7 @@ export const FieldView = observer (() => {
                         })}
                 </Box>
                 {
-                    map.field.map((item, rowIndex) => {
+                    currentField.field.map((item, rowIndex) => {
                         return (
                             <Box
                                 key={rowIndex}
@@ -63,6 +58,7 @@ export const FieldView = observer (() => {
                                         <Box
                                             className="field-item"
                                             key={rowIndex * 10 + columnIndex}
+                                            onClick={()=>currentField.removeShip(rowIndex, columnIndex)}
                                             style={{ backgroundColor: i ? "rgb(6, 2, 49)" : "white" }}
                                         />
                                     )

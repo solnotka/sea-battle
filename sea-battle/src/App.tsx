@@ -1,17 +1,32 @@
 import './App.css';
 import { FieldView } from './FieldView';
 import { PrimaryButton } from './PrimaryButton';
-import { map } from './Field';
+import { currentField } from './Field';
+import { Box, Text } from 'grommet';
 
 function App() {
-  
+
   return (
     <div className="App">
-      <FieldView/>
-      <PrimaryButton
-        onClick={() => map.addShip(Math.round(Math.random() * 4))}
-        label="Очистить поле"
-      />
+      <Box direction="row">
+        <FieldView />
+        <Box justify="center">
+          <Box width="35px"></Box>
+          <PrimaryButton
+            onClick={() => currentField.addShip(Math.ceil(Math.random() * 4))}
+            label="Добавить корабль"
+          />
+          <PrimaryButton
+            onClick={() => currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1])}
+            label="Добавить 4-3-3-2-2-2-1-1-1-1"
+          />
+          <PrimaryButton
+            onClick={() => currentField.clearField()}
+            label="Очистить поле"
+          />
+        </Box>
+      </Box>
+      <Box>Тут я что-нибудь напишу</Box>
     </div>
   );
 }

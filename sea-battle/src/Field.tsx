@@ -7,8 +7,8 @@ export class Field implements IField {
 
     constructor() {
         this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
-        makeObservable(this, 
-            {field: observable})
+        makeObservable(this,
+            { field: observable })
     }
 
     addShip(size: number) {
@@ -26,7 +26,7 @@ export class Field implements IField {
             column = Math.floor(Math.random() * 10);
             isSpace = this.checkSpace(row, column, size, direction);
             safeCounter++;
-            if (safeCounter >= 50) {
+            if (safeCounter >= 100) {
                 console.log(`Не удалось разместить корабль размера ${size} с параметрами ${direction}, ${row}, ${column}`);
                 return;
             }
@@ -47,6 +47,46 @@ export class Field implements IField {
         return this.field;
     }
 
+    removeShip(row: number, column: number) {
+        if (this.field[row][column] === 1) {
+            this.field[row][column] = 0;
+
+            if (column < 9) {
+                for (let i = column + 1; i < 10; i++) {
+                    if (this.field[row][i] === 0) {
+                        break
+                    } else this.field[row][i] = 0
+                }
+            }
+
+            if (column > 0) {
+                for (let i = column - 1; i >= 0; i--) {
+                    if (this.field[row][i] === 0) {
+                        break
+                    } else this.field[row][i] = 0
+                }
+            }
+
+            if (row < 9) {
+                for (let i = row + 1; i < 10; i++) {
+                    if (this.field[i][column] === 0) {
+                        break
+                    } else this.field[i][column] = 0
+                }
+            }
+
+            if (row > 0) {
+                for (let i = row - 1; i >= 0; i--) {
+                    if (this.field[i][column] === 0) {
+                        break
+                    } else this.field[i][column] = 0
+                }
+            }
+
+        } else console.log("Тут пусто")
+        console.log(this.field[row])
+    }
+
     //Это проверка, что корабль есть куда ставить
     checkSpace(row: number, column: number, size: number, direction: string) {
 
@@ -54,7 +94,7 @@ export class Field implements IField {
         let checkForOne = (row: number, column: number) => {
             if ((row > 0 && column > 0 && this.field[row - 1][column - 1] === 1) ||
                 (row > 0 && this.field[row - 1][column] === 1) ||
-                (row > 0 && column < 9 && this.field[row - 1][column + 1] === 1)  ||
+                (row > 0 && column < 9 && this.field[row - 1][column + 1] === 1) ||
                 (column > 0 && this.field[row][column - 1] === 1) ||
                 (this.field[row][column] === 1) ||
                 (column < 9 && this.field[row][column + 1] === 1) ||
@@ -91,12 +131,18 @@ export class Field implements IField {
     }
 
     //Эта функция у меня добавляет сразу все корабли. Для каждого нужно передать размер
-    setField(arr: number[]) {
+    changeField(arr: number[]) {
+        this.clearField()
         arr.map((item) => this.addShip(item));
 
         return this.field;
     }
 
+    clearField() {
+        this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
+        console.log("На поле больше нет кораблей")
+    }
+
 }
 
-export const map = new Field()
+export const currentField = new Field()

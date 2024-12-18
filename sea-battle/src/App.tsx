@@ -36,15 +36,25 @@ export const App = observer(() => {
         }
       </Box>
       {currentField.game ?
-        <PrimaryButton
-          onClick={() => {
-            currentField.game = false;
-            currentField.shotCount = 0;
-            currentField.clearField();
-          }}
-          label="Закончить игру"
-          size="large"
-        /> :
+        <Box direction="row">
+          <PrimaryButton
+            onClick={() => {
+              currentField.shotCount = 0;
+              currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+            }}
+            label="Сыграть еще"
+            size="large"
+          />
+          <PrimaryButton
+            onClick={() => {
+              currentField.game = false;
+              currentField.shotCount = 0;
+              currentField.clearField();
+            }}
+            label="Закончить игру"
+            size="large"
+          />
+        </Box> :
         <PrimaryButton
           onClick={() => {
             currentField.game = true;

@@ -1,10 +1,12 @@
 export interface IField {
     field: number[][],
+    game: boolean
+    shipCount: Record<number | string, number>,
+    deadShipCount: Record<number | string, number>,
     addShip: (size: number) => void,
     removeShip: (row: number, column: number) => void,
-    checkSpace: (row: number, column: number, size: number, direction: string) => void,
+    shootShip: (row: number, column: number) => void,
     changeField: (arr: number[]) => void,
     clearField: ()=> void,
-    shipCount: Record<number | string, number>,
-    shipCountReport: string[]
+    
 }

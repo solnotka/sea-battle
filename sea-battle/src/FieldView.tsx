@@ -72,9 +72,11 @@ export const FieldView = observer(() => {
                                                     onGame(i, rowIndex, columnIndex) :
                                                     currentField.removeShip(rowIndex, columnIndex)
                                             }
-                                            style={{ backgroundColor: i === 1 ? "rgb(6, 2, 49)" : 
+                                            style={{ backgroundColor: 
                                                 i === -1 ? "rgb(200, 10, 54)" :
                                                 i === -2 ? "rgb(77, 59, 64)" :
+                                                ((i === 1 || i === 0) && currentField.game) ? "rgb(172, 211, 222)" :
+                                                i === 1 ? "rgb(6, 2, 49)" : 
                                                 "white" }}
                                         >
                                             {i === 0.5 && <Close size="35px"/>}

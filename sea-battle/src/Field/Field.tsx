@@ -119,7 +119,7 @@ export class Field implements IField {
 
         if (column < 9) {
             for (let i = column + 1; i < 10; i++) {
-                if (this.field[row][i] === 0) {
+                if (this.field[row][i] === 0 || this.field[row][i] === 0.5) {
                     break
                 } else if (this.field[row][i] === -1) {
                     wounds.push([row, i])
@@ -131,7 +131,7 @@ export class Field implements IField {
 
         if (column > 0) {
             for (let i = column - 1; i >= 0; i--) {
-                if (this.field[row][i] === 0) {
+                if (this.field[row][i] === 0 || this.field[row][i] === 0.5) {
                     break
                 } else if (this.field[row][i] === -1) {
                     wounds.push([row, i])
@@ -143,7 +143,7 @@ export class Field implements IField {
 
         if (row < 9) {
             for (let i = row + 1; i < 10; i++) {
-                if (this.field[i][column] === 0) {
+                if (this.field[i][column] === 0 || this.field[i][column] === 0.5) {
                     break
                 } else if (this.field[i][column] === -1) {
                     wounds.push([i, column])
@@ -155,7 +155,7 @@ export class Field implements IField {
 
         if (row > 0) {
             for (let i = row - 1; i >= 0; i--) {
-                if (this.field[i][column] === 0) {
+                if (this.field[i][column] === 0 || this.field[i][column] === 0.5) {
                     break
                 } else if (this.field[i][column] === -1) {
                     wounds.push([i, column])

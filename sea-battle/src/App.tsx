@@ -54,10 +54,24 @@ export const App = observer(() => {
         />
       }
       <Box direction="row">
-      <Info />
-      {currentField.game && <Info dead/>}
+        <Info />
+        {currentField.game && <Info dead />}
       </Box>
-    </div>
+      {/* <Box>
+        {
+          currentField.field.map((item, rowIndex) => {
+            return (
+              <Box
+                key={rowIndex}
+                direction="row"
+              >
+                [{item.join(", ")}]
+              </Box>
+            )
+          })
+        }
+      </Box> */}
+    </div >
   );
 })
 

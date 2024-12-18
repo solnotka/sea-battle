@@ -39,6 +39,7 @@ export const App = observer(() => {
         <PrimaryButton
           onClick={() => {
             currentField.game = false;
+            currentField.shotCount = 0;
             currentField.clearField();
           }}
           label="Закончить игру"

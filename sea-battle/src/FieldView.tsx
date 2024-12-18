@@ -9,6 +9,7 @@ export const FieldView = observer(() => {
     const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     const onGame = (i: number, rowIndex : number, columnIndex : number) => {
+        currentField.shotCount++;
         if (i === 0) {
             currentField.field[rowIndex][columnIndex] = 0.5
         } else if (i === 1) {

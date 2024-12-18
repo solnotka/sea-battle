@@ -60,7 +60,7 @@ export const getShipCount = (field: number[][], ind: number[]) => {
                         let verticalSize = 1;
                         let newRow = row - 1
 
-                        while ( newRow >= 0 && ind.includes(field[newRow][col]))  {
+                        while (newRow >= 0 && ind.includes(field[newRow][col])) {
                             verticalSize++
                             newRow--
                         }
@@ -69,7 +69,7 @@ export const getShipCount = (field: number[][], ind: number[]) => {
                         if (shipMap[verticalSize]) {
                             shipMap[verticalSize]++
                         } else shipMap[verticalSize] = 1
-                        
+
                         // Тут у нас единички и горизонтальные корабли
                     } else {
 
@@ -91,6 +91,6 @@ export const getShipCount = (field: number[][], ind: number[]) => {
             }
         }
     }
-    shipMap["all"] = count 
+    shipMap["all"] = count
     return shipMap
 }

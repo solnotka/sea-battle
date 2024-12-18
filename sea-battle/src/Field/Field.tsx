@@ -5,7 +5,8 @@ import { checkSpace, getShipCount } from "./utils";
 export class Field implements IField {
 
     field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
-    game = false
+    game = false;
+    shotCount = 0;
 
     // Значения полей:
     // 0 — пусто
@@ -19,6 +20,7 @@ export class Field implements IField {
             {
                 field: observable,
                 game: observable,
+                shotCount: observable,
                 shipCount: computed,
                 deadShipCount: computed,
             })

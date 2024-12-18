@@ -28,7 +28,7 @@ export const Info = observer(({ dead = false } : {dead? : boolean} ) => {
             round="small"
             style={{color: dead ? "rgb(200, 10, 54)" : "black"}}
         >
-
+            {dead && <Box>Выстрелов: {currentField.shotCount}</Box>}
             {reportArr.map((item, index) => {
                 return (
                     <Box key={index}>

@@ -1,7 +1,6 @@
 import { Box } from "grommet";
 import { currentField } from "./Field/Field";
 import { observer } from "mobx-react-lite";
-import { getShipCount } from "./Field/utils";
 
 export const Info = observer(({ dead = false } : {dead? : boolean} ) => {
     let shipCount = dead ? currentField.deadShipCount : currentField.shipCount

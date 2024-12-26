@@ -2,6 +2,7 @@ import { currentField } from "./Field/Field";
 import { Box } from 'grommet'
 import { observer } from "mobx-react-lite";
 import { Close } from 'grommet-icons'
+import { CELL_STATE } from "./interfaces";
 
 export const FieldView = observer(() => {
 
@@ -9,11 +10,12 @@ export const FieldView = observer(() => {
     const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     const onGame = (i: number, rowIndex : number, columnIndex : number) => {
-        currentField.shotCount++;
-        if (i === 0) {
-            currentField.field[rowIndex][columnIndex] = 0.5
-        } else if (i === 1) {
-            currentField.shootShip(rowIndex, columnIndex)
+        if (i === CELL_STATE.EMPTY) {
+            currentField.field[rowIndex][columnIndex] = CELL_STATE.EMPTY_KNOWN;
+            currentField.shotCount++;
+        } else if (i === CELL_STATE.OCCUPIED) {
+            currentField.shootShip(rowIndex, columnIndex);
+            currentField.shotCount++;
         }
     }
     
@@ -74,13 +76,13 @@ export const FieldView = observer(() => {
                                                     currentField.removeShip(rowIndex, columnIndex)
                                             }
                                             style={{ backgroundColor: 
-                                                i === -1 ? "rgb(200, 10, 54)" :
-                                                i === -2 ? "rgb(77, 59, 64)" :
-                                                ((i === 1 || i === 0) && currentField.game) ? "rgb(172, 211, 222)" :
-                                                i === 1 ? "rgb(6, 2, 49)" : 
+                                                i === CELL_STATE.WOUNDED ? "rgb(200, 10, 54)" :
+                                                i === CELL_STATE.DROWNED ? "rgb(77, 59, 64)" :
+                                                ((i === CELL_STATE.OCCUPIED || i === CELL_STATE.EMPTY) && currentField.game) ? "rgb(172, 211, 222)" :
+                                                i === CELL_STATE.OCCUPIED ? "rgb(6, 2, 49)" : 
                                                 "white" }}
                                         >
-                                            {i === 0.5 && <Close size="35px"/>}
+                                            {i === CELL_STATE.EMPTY_KNOWN && <Close size="35px"/>}
                                             </Box>
                                     )
                                 })}

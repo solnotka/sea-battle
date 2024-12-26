@@ -1,15 +1,22 @@
+import { CELL_STATE } from "../interfaces";
+
+
 // Это чтобы проверить квадратик 9×9 вокруг нужной клетки
 export const checkForOne = (field: number[][], row: number, column: number) => {
-    if ((row > 0 && column > 0 && field[row - 1][column - 1] === 1) ||
-        (row > 0 && field[row - 1][column] === 1) ||
-        (row > 0 && column < 9 && field[row - 1][column + 1] === 1) ||
-        (column > 0 && field[row][column - 1] === 1) ||
-        (field[row][column] === 1) ||
-        (column < 9 && field[row][column + 1] === 1) ||
-        (row < 9 && column > 0 && field[row + 1][column - 1] === 1) ||
-        (row < 9 && field[row + 1][column] === 1) ||
-        (row < 9 && column < 9 && field[row + 1][column + 1] === 1)) {
-        return false;
+    for (
+        let rowInd = (row === 0 ? row : row - 1);
+        rowInd <= (row === 9 ? row : row + 1);
+        rowInd++
+    ) {
+        for (
+            let colInd = (column === 0 ? column : column - 1);
+            colInd <= (column === 9 ? column : column + 1);
+            colInd++
+        ) {
+            if (field[rowInd][colInd] === CELL_STATE.OCCUPIED) {
+                return false
+            }
+        }
     }
     return true;
 };
@@ -49,6 +56,7 @@ export const getShipCount = (field: number[][], ind: number[]) => {
     for (let row = 0; row < 10; row++) {
         for (let col = 0; col < 10; col++) {
             if (ind.includes(field[row][col])) {
+
                 // Если это вертикальный корабль и ниже он продолжается, то его пока пропускаем. Обработаем на последней клеточке
                 if (row < 9 && ind.includes(field[row + 1][col])) {
                     continue
@@ -93,4 +101,30 @@ export const getShipCount = (field: number[][], ind: number[]) => {
     }
     shipMap["all"] = count
     return shipMap
+}
+
+export const checkLineForShooting = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {
+    
+    let lineWounds = []
+
+    for (
+        let i = rowDirection ? column : row;
+        forward ? i < 10 : i >= 0;
+        forward ? i++ : i--
+    ) {
+        if ((rowDirection && i === column) || (!rowDirection && i === row)) {
+            continue;
+        } else if ((rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN].includes(field[row][i])) ||
+            (!rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN].includes(field[i][column]))) {
+            return lineWounds;
+        } else if (rowDirection && field[row][i] === CELL_STATE.WOUNDED) {
+            lineWounds.push([row, i])
+        } else if (!rowDirection && field[i][column] === CELL_STATE.WOUNDED) {
+            lineWounds.push([i, column])
+        } else if ((rowDirection && field[row][i] === CELL_STATE.OCCUPIED) ||
+            (!rowDirection && field[i][column] === CELL_STATE.OCCUPIED)) {
+            return null
+        }
+    }
+    return lineWounds
 }

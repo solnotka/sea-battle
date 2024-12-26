@@ -9,5 +9,12 @@ export interface IField {
     shootShip: (row: number, column: number) => void,
     changeField: (arr: number[]) => void,
     clearField: ()=> void,
-    
+}
+
+export enum CELL_STATE {
+    EMPTY = 0,
+    OCCUPIED = 1,
+    EMPTY_KNOWN = 0.5,
+    WOUNDED = -1,
+    DROWNED = -2
 }

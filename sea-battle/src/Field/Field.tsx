@@ -1,19 +1,12 @@
 import { computed, makeObservable, observable } from "mobx";
-import { IField } from "../interfaces";
-import { checkSpace, getShipCount } from "./utils";
+import { CELL_STATE, IField } from "../interfaces";
+import { checkLineForShooting, checkSpace, getShipCount } from "./utils";
 
 export class Field implements IField {
 
     field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
     game = false;
     shotCount = 0;
-
-    // Значения полей:
-    // 0 — пусто
-    // 1 — занято
-    // 0.5 — выстрел по пустой клетке
-    // –1 — ранен
-    // —2 — убит
 
     constructor() {
         makeObservable(this,
@@ -28,12 +21,12 @@ export class Field implements IField {
 
     get shipCount() {
 
-        return getShipCount(this.field, [1, -1])
+        return getShipCount(this.field, [CELL_STATE.OCCUPIED, CELL_STATE.WOUNDED])
     }
 
     get deadShipCount() {
 
-        return getShipCount(this.field, [-2])
+        return getShipCount(this.field, [CELL_STATE.DROWNED])
     }
 
     addShip(size: number) {
@@ -60,50 +53,44 @@ export class Field implements IField {
         // Тут я считаю, что все хорошо и можно добавлять корабль
         if (direction === "vertical") {
             for (let i = row; i < row + size; i++) {
-                this.field[i][column] = 1;
+                this.field[i][column] = CELL_STATE.OCCUPIED;
             }
 
         } else if (direction === "horizontal") {
             for (let i = column; i < column + size; i++) {
-                this.field[row][i] = 1;
+                this.field[row][i] = CELL_STATE.OCCUPIED;
             }
         }
         return this.field;
     }
 
     removeShip(row: number, column: number) {
-        if (this.field[row][column] === 1) {
-            this.field[row][column] = 0;
+        if (this.field[row][column] === CELL_STATE.OCCUPIED) {
+            this.field[row][column] = CELL_STATE.EMPTY;
 
-            if (column < 9) {
-                for (let i = column + 1; i < 10; i++) {
-                    if (this.field[row][i] === 0) {
-                        break
-                    } else this.field[row][i] = 0
+            const handleLineForRemove = (row: number, column: number, rowDirection: boolean, forward: boolean) => {
+
+                for (
+                    let i = rowDirection ? column : row;
+                    forward ? i < 10 : i >= 0;
+                    forward ? i++ : i--
+                ) {
+                    if ((rowDirection && i === column) || (!rowDirection && i === row)) {
+                        continue;
+                    } else if ((rowDirection && this.field[row][i] === CELL_STATE.EMPTY) ||
+                        (!rowDirection && this.field[i][column] === CELL_STATE.EMPTY)) {
+                        break;
+                    } else if (rowDirection) {
+                        this.field[row][i] = CELL_STATE.EMPTY;
+                    } else if (!rowDirection) {
+                        this.field[i][column] = CELL_STATE.EMPTY;
+                    }
                 }
             }
 
-            if (column > 0) {
-                for (let i = column - 1; i >= 0; i--) {
-                    if (this.field[row][i] === 0) {
-                        break
-                    } else this.field[row][i] = 0
-                }
-            }
-
-            if (row < 9) {
-                for (let i = row + 1; i < 10; i++) {
-                    if (this.field[i][column] === 0) {
-                        break
-                    } else this.field[i][column] = 0
-                }
-            }
-
-            if (row > 0) {
-                for (let i = row - 1; i >= 0; i--) {
-                    if (this.field[i][column] === 0) {
-                        break
-                    } else this.field[i][column] = 0
+            for (let boo of [true, false]) {
+                for (let lean of [true, false]) {
+                    handleLineForRemove(row, column, boo, lean)
                 }
             }
 
@@ -112,88 +99,39 @@ export class Field implements IField {
 
     shootShip(row: number, column: number) {
 
-        if (this.field[row][column] === 1) {
-            this.field[row][column] = -1;
-
+        if (this.field[row][column] === CELL_STATE.OCCUPIED) {
+            this.field[row][column] = CELL_STATE.WOUNDED;
         }
 
         let wounds = [[row, column]];
 
-        if (column < 9) {
-            for (let i = column + 1; i < 10; i++) {
-                if (this.field[row][i] === 0 || this.field[row][i] === 0.5) {
-                    break
-                } else if (this.field[row][i] === -1) {
-                    wounds.push([row, i])
-                } else if (this.field[row][i] === 1) {
+        for (let boo of [true, false]) {
+            for (let lean of [true, false]) {
+                let newWounds = checkLineForShooting(this.field, row, column, boo, lean)
+                if (!newWounds) {
                     return;
-                }
-            }
-        }
-
-        if (column > 0) {
-            for (let i = column - 1; i >= 0; i--) {
-                if (this.field[row][i] === 0 || this.field[row][i] === 0.5) {
-                    break
-                } else if (this.field[row][i] === -1) {
-                    wounds.push([row, i])
-                } else if (this.field[row][i] === 1) {
-                    return;
-                }
-            }
-        }
-
-        if (row < 9) {
-            for (let i = row + 1; i < 10; i++) {
-                if (this.field[i][column] === 0 || this.field[i][column] === 0.5) {
-                    break
-                } else if (this.field[i][column] === -1) {
-                    wounds.push([i, column])
-                } else if (this.field[i][column] === 1) {
-                    return;
-                }
-            }
-        }
-
-        if (row > 0) {
-            for (let i = row - 1; i >= 0; i--) {
-                if (this.field[i][column] === 0 || this.field[i][column] === 0.5) {
-                    break
-                } else if (this.field[i][column] === -1) {
-                    wounds.push([i, column])
-                } else if (this.field[i][column] === 1) {
-                    return;
-                }
+                } else wounds = wounds.concat(newWounds)
             }
         }
 
         wounds.forEach((item) => {
             let [rowIndex, colIndex] = item;
-            this.field[rowIndex][colIndex] = -2;
+            this.field[rowIndex][colIndex] = CELL_STATE.DROWNED;
 
-            if (rowIndex > 0 && colIndex > 0 && this.field[rowIndex - 1][colIndex - 1] === 0) {
-                this.field[rowIndex - 1][colIndex - 1] = 0.5;
-            }
-            if (rowIndex > 0 && this.field[rowIndex - 1][colIndex] === 0) {
-                this.field[rowIndex - 1][colIndex] = 0.5;
-            }
-            if (rowIndex > 0 && colIndex < 9 && this.field[rowIndex - 1][colIndex + 1] === 0) {
-                this.field[rowIndex - 1][colIndex + 1] = 0.5;
-            }
-            if (colIndex > 0 && this.field[rowIndex][colIndex - 1] === 0) {
-                this.field[rowIndex][colIndex - 1] = 0.5;
-            }
-            if (colIndex < 9 && this.field[rowIndex][colIndex + 1] === 0) {
-                this.field[rowIndex][colIndex + 1] = 0.5;
-            }
-            if (rowIndex < 9 && colIndex > 0 && this.field[rowIndex + 1][colIndex - 1] === 0) {
-                this.field[rowIndex + 1][colIndex - 1] = 0.5;
-            }
-            if (rowIndex < 9 && this.field[rowIndex + 1][colIndex] === 0) {
-                this.field[rowIndex + 1][colIndex] = 0.5;
-            }
-            if (rowIndex < 9 && colIndex < 9 && this.field[rowIndex + 1][colIndex + 1] === 0) {
-                this.field[rowIndex + 1][colIndex + 1] = 0.5;
+            for (
+                let r = (rowIndex === 0 ? rowIndex : rowIndex - 1);
+                r <= (rowIndex === 9 ? rowIndex : rowIndex + 1);
+                r++
+            ) {
+                for (
+                    let c = (colIndex === 0 ? colIndex : colIndex - 1);
+                    c <= (colIndex === 9 ? colIndex : colIndex + 1);
+                    c++
+                ) {
+                    if (this.field[r][c] === CELL_STATE.EMPTY) {
+                        this.field[r][c] = CELL_STATE.EMPTY_KNOWN;
+                    }
+                }
             }
         })
 

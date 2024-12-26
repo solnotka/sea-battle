@@ -1,4 +1,4 @@
-import { checkForOne, checkSpace, getShipCount } from "./utils";
+import { checkForOne, checkLineForShooting, checkSpace, getShipCount } from "./utils";
 
 export const field_1 = [
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
@@ -110,4 +110,24 @@ test('getShipCount 4', () => {
 
 test('getShipCount 5', () => {
     expect(getShipCount(field_4, [-2])).toEqual({ 1: 2, 4: 1, all: 3 })
+})
+
+test('checkLineForShooting 1', () => {
+    expect(checkLineForShooting(field_4, 8, 0, false, true)).toEqual([[9, 0]])
+})
+
+test('checkLineForShooting 2', () => {
+    expect(checkLineForShooting(field_4, 8, 0, false, false)).toEqual([])
+})
+
+test('checkLineForShooting 3', () => {
+    expect(checkLineForShooting(field_4, 4, 4, true, true)).toEqual([])
+})
+
+test('checkLineForShooting 4', () => {
+    expect(checkLineForShooting(field_4, 7, 7, true, true)).toEqual(null)
+})
+
+test('checkLineForShooting 5', () => {
+    expect(checkLineForShooting(field_4, 3, 7, false, false)).toEqual([])
 })

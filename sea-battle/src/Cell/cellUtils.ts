@@ -28,11 +28,11 @@ export const getSelectedColor = (field : number[][], row : number, column : numb
     } else return "rgba(214, 29, 29, 0.5)"
 }
 
-export const getPreviewColor = (field : number[][], row : number, column : number, cells : [number, number][]) => {
-    cells.forEach((item) => {
-        if (item[0] === row && item[1] == column)
-    })
-}
+// export const getPreviewColor = (field : number[][], row : number, column : number, cells : [number, number][]) => {
+//     cells.forEach((item) => {
+//         if (item[0] === row && item[1] == column)
+//     })
+// }
 
 export const shootOnClick = (field: IField, cell: CELL_STATE, rowIndex: number, columnIndex: number) => {
     if (cell === CELL_STATE.EMPTY) {

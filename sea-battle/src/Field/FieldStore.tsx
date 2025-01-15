@@ -1,8 +1,8 @@
 import { computed, makeObservable, observable } from "mobx";
-import { CELL_STATE, IField } from "../interfaces";
+import { CELL_STATE, IField, SHIP_DIRECTION } from "../interfaces";
 import { checkLineForShooting, checkSpace, getShipCount } from "./utils";
 
-export class Field implements IField {
+export class FieldStore implements IField {
 
     field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
     game = false;
@@ -30,7 +30,7 @@ export class Field implements IField {
     }
 
     addShip(size: number) {
-        let direction = Math.random() < 0.5 ? "vertical" : "horizontal";
+        let direction = Math.random() < 0.5 ? SHIP_DIRECTION.VERTICAL : SHIP_DIRECTION.HORIZONTAL;
         let row = Math.floor(Math.random() * 10);
         let column = Math.floor(Math.random() * 10);
         let isSpace = checkSpace(this.field, row, column, size, direction);
@@ -51,12 +51,12 @@ export class Field implements IField {
         }
 
         // Тут я считаю, что все хорошо и можно добавлять корабль
-        if (direction === "vertical") {
+        if (direction === SHIP_DIRECTION.VERTICAL) {
             for (let i = row; i < row + size; i++) {
                 this.field[i][column] = CELL_STATE.OCCUPIED;
             }
 
-        } else if (direction === "horizontal") {
+        } else if (direction === SHIP_DIRECTION.HORIZONTAL) {
             for (let i = column; i < column + size; i++) {
                 this.field[row][i] = CELL_STATE.OCCUPIED;
             }
@@ -64,11 +64,43 @@ export class Field implements IField {
         return this.field;
     }
 
+    addShipByUser(startRow : number, startCol : number, endRow : number, endCol : number) {
+        let size = 0;
+        let direction = SHIP_DIRECTION.VERTICAL;
+        const minRow = startRow <= endRow ? startRow : endRow;
+        const minCol = startCol <= endCol ? startCol : endCol
+
+        if (startRow !== endRow && startCol !== endCol) {
+            return
+        } else if (startRow === endRow && startCol === endCol) {
+            size = 1;
+        } else if (startRow === endRow && startCol !== endCol) {
+            size = Math.abs(endCol - startCol) + 1;
+            direction = SHIP_DIRECTION.HORIZONTAL
+        }else if (startRow !== endRow && startCol === endCol) {
+            size = Math.abs(endRow - startRow) + 1;
+            direction = SHIP_DIRECTION.VERTICAL
+        }
+
+        if (checkSpace(this.field, minRow, minCol, size, direction)) {
+            if (direction === SHIP_DIRECTION.VERTICAL) {
+                for (let i = minRow; i < minRow + size; i++) {
+                    this.field[i][minCol] = CELL_STATE.OCCUPIED;
+                }
+    
+            } else if (direction === SHIP_DIRECTION.HORIZONTAL) {
+                for (let i = minCol; i < minCol + size; i++) {
+                    this.field[minRow][i] = CELL_STATE.OCCUPIED;
+                }
+            }
+        }
+    }
+
     removeShip(row: number, column: number) {
         if (this.field[row][column] === CELL_STATE.OCCUPIED) {
             this.field[row][column] = CELL_STATE.EMPTY;
 
-            const handleLineForRemove = (row: number, column: number, rowDirection: boolean, forward: boolean) => {
+            const handleLine = (row: number, column: number, rowDirection: boolean, forward: boolean) => {
 
                 for (
                     let i = rowDirection ? column : row;
@@ -90,7 +122,7 @@ export class Field implements IField {
 
             for (let boo of [true, false]) {
                 for (let lean of [true, false]) {
-                    handleLineForRemove(row, column, boo, lean)
+                    handleLine(row, column, boo, lean)
                 }
             }
 
@@ -119,16 +151,14 @@ export class Field implements IField {
             this.field[rowIndex][colIndex] = CELL_STATE.DROWNED;
 
             for (
-                let r = (rowIndex === 0 ? rowIndex : rowIndex - 1);
-                r <= (rowIndex === 9 ? rowIndex : rowIndex + 1);
-                r++
+                let r = rowIndex - 1; r <= rowIndex + 1; r++
             ) {
                 for (
-                    let c = (colIndex === 0 ? colIndex : colIndex - 1);
-                    c <= (colIndex === 9 ? colIndex : colIndex + 1);
-                    c++
+                    let c = colIndex - 1; c <= colIndex + 1; c++
                 ) {
-                    if (this.field[r][c] === CELL_STATE.EMPTY) {
+                    if (r < 0 || r > 9 || c < 0 || c > 9) {
+                        continue
+                    } else if (this.field[r][c] === CELL_STATE.EMPTY) {
                         this.field[r][c] = CELL_STATE.EMPTY_KNOWN;
                     }
                 }
@@ -152,4 +182,4 @@ export class Field implements IField {
 
 }
 
-export const currentField = new Field()
+export const currentField = new FieldStore()

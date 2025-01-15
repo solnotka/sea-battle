@@ -1,19 +1,17 @@
-import { CELL_STATE } from "../interfaces";
+import { CELL_STATE, SHIP_DIRECTION } from "../interfaces";
 
 
 // Это чтобы проверить квадратик 9×9 вокруг нужной клетки
 export const checkForOne = (field: number[][], row: number, column: number) => {
     for (
-        let rowInd = (row === 0 ? row : row - 1);
-        rowInd <= (row === 9 ? row : row + 1);
-        rowInd++
+        let rowInd = row - 1; rowInd <= row + 1; rowInd++
     ) {
         for (
-            let colInd = (column === 0 ? column : column - 1);
-            colInd <= (column === 9 ? column : column + 1);
-            colInd++
+            let colInd = column - 1; colInd <= column + 1; colInd++
         ) {
-            if (field[rowInd][colInd] === CELL_STATE.OCCUPIED) {
+            if (rowInd < 0 || rowInd > 9 || colInd < 0 || colInd > 9) {
+                continue
+            } else if (field[rowInd][colInd] === CELL_STATE.OCCUPIED) {
                 return false
             }
         }
@@ -21,10 +19,31 @@ export const checkForOne = (field: number[][], row: number, column: number) => {
     return true;
 };
 
-export const checkSpace = (field: number[][], row: number, column: number, size: number, direction: string) => {
+export const getCheckParams = (startRow: number, startCol: number, endRow: number, endCol: number) => {
+    let size = 0;
+    let direction = SHIP_DIRECTION.VERTICAL;
+    const minRow = startRow <= endRow ? startRow : endRow;
+    const minCol = startCol <= endCol ? startCol : endCol
+
+    if (startRow !== endRow && startCol !== endCol) {
+        return [-1, 0, 1, SHIP_DIRECTION.VERTICAL]
+    } else 
+    if (startRow === endRow && startCol === endCol) {
+        size = 1;
+    } else if (startRow === endRow && startCol !== endCol) {
+        size = Math.abs(endCol - startCol) + 1;
+        direction = SHIP_DIRECTION.HORIZONTAL
+    }else if (startRow !== endRow && startCol === endCol) {
+        size = Math.abs(endRow - startRow) + 1;
+        direction = SHIP_DIRECTION.VERTICAL
+    }
+    return [minRow, minCol, size, direction]
+}
+
+export const checkSpace = (field: number[][], row: number, column: number, size: number, direction: SHIP_DIRECTION) => {
 
     //Общая проверка для всех квадратиков, на которые должен встать корабль
-    if (direction === "horizontal") {
+    if (direction === SHIP_DIRECTION.HORIZONTAL) {
         for (let i = column; i < column + size; i++) {
             if (i > 9) {
                 return false;
@@ -34,7 +53,7 @@ export const checkSpace = (field: number[][], row: number, column: number, size:
 
             }
         }
-    } else if (direction === "vertical") {
+    } else if (direction === SHIP_DIRECTION.VERTICAL) {
         for (let i = row; i < row + size; i++) {
             if (i > 9) {
                 return false;
@@ -104,7 +123,7 @@ export const getShipCount = (field: number[][], ind: number[]) => {
 }
 
 export const checkLineForShooting = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {
-    
+
     let lineWounds = []
 
     for (

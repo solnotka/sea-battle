@@ -1,3 +1,4 @@
+import { SHIP_DIRECTION } from "../interfaces";
 import { checkForOne, checkLineForShooting, checkSpace, getShipCount } from "./utils";
 
 export const field_1 = [
@@ -73,23 +74,23 @@ test('checkForOne 5', () => {
 })
 
 test('checkSpace 1', () => {
-    expect(checkSpace(field_3, 0, 6, 3, "horizontal")).toEqual(true);
+    expect(checkSpace(field_3, 0, 6, 3, SHIP_DIRECTION.HORIZONTAL)).toEqual(true);
 })
 
 test('checkSpace 2', () => {
-    expect(checkSpace(field_3, 7, 1, 2, "vertical")).toEqual(true);
+    expect(checkSpace(field_3, 7, 1, 2, SHIP_DIRECTION.VERTICAL)).toEqual(true);
 })
 
 test('checkSpace 3', () => {
-    expect(checkSpace(field_3, 1, 7, 4, "horizontal")).toEqual(false);
+    expect(checkSpace(field_3, 1, 7, 4, SHIP_DIRECTION.HORIZONTAL)).toEqual(false);
 })
 
 test('checkSpace 4', () => {
-    expect(checkSpace(field_2, 0, 5, 3, "vertical")).toEqual(false);
+    expect(checkSpace(field_2, 0, 5, 3, SHIP_DIRECTION.VERTICAL)).toEqual(false);
 })
 
 test('checkSpace 5', () => {
-    expect(checkSpace(field_1, 2, 2, 1, "vertical")).toEqual(false);
+    expect(checkSpace(field_1, 2, 2, 1, SHIP_DIRECTION.VERTICAL)).toEqual(false);
 })
 
 test('getShipCount 1', () => {

@@ -1,9 +1,9 @@
 import { Box } from "grommet";
-import { currentField } from "./Field/Field";
 import { observer } from "mobx-react-lite";
+import { IField } from "./interfaces";
 
-export const Info = observer(({ dead = false } : {dead? : boolean} ) => {
-    let shipCount = dead ? currentField.deadShipCount : currentField.shipCount
+export const Info = observer(({ field, dead = false } : {field: IField, dead? : boolean} ) => {
+    let shipCount = dead ? field.deadShipCount : field.shipCount
     
     let reportArr = dead ? [`Убито кораблей: ${shipCount["all"]}`] : [`Кораблей на поле: ${shipCount["all"]}`];
 
@@ -18,16 +18,16 @@ export const Info = observer(({ dead = false } : {dead? : boolean} ) => {
     return (
         <Box
             className="info"
-            alignSelf="start"
+            alignSelf="center"
             background="white"
             border={{ color: dead ? "rgb(200, 10, 54)" : "rgb(6, 2, 49)", size: "small" }}
             gap="small"
-            margin={{ left: "140px", top: "large" }}
+            margin={{ top: "large", left: "35px" }}
             pad="medium"
             round="small"
             style={{color: dead ? "rgb(200, 10, 54)" : "black"}}
         >
-            {dead && <Box>Выстрелов: {currentField.shotCount}</Box>}
+            {dead && <Box>Выстрелов: {field.shotCount}</Box>}
             {reportArr.map((item, index) => {
                 return (
                     <Box key={index}>

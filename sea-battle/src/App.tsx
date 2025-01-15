@@ -1,24 +1,45 @@
 import './App.css';
-import { FieldView } from './FieldView';
+import { Field } from './Field';
 import { PrimaryButton } from './PrimaryButton';
-import { currentField } from './Field/Field';
+import { currentField } from './Field/FieldStore';
 import { Box } from 'grommet';
 import { Info } from './Info';
 import { observer } from 'mobx-react-lite';
+import { useState } from 'react';
+import { BattleView } from './BattleView';
+import { currentBattle } from './Battle';
+import { GAME_STATE } from './interfaces';
 
 export const App = observer(() => {
+  const [gameState, setGameState] = useState(GAME_STATE.INIT);
+  // const [endCell, setEndCell] = useState([-1, -1])
 
   return (
     <div className="App">
       <Box direction="row">
-        <FieldView />
-        {!currentField.game && <Box justify="center">
+        {currentBattle.game ? <BattleView / > : <Field gameState = {gameState} />}
+         {!currentBattle.game && <Box justify="center">
           <Box width="35px"></Box>
           <PrimaryButton
             onClick={() => {
-              currentField.addShip(Math.ceil(Math.random() * 4))
+              setGameState(GAME_STATE.ADD_SHIP);
+              console.log("Активирован режим добавления кораблей", gameState)
             }}
-            label="Добавить корабль"
+            label="Перейти в режим добавления кораблей"
+          />
+          <PrimaryButton
+            onClick={() => {
+              setGameState(GAME_STATE.REMOVE_SHIP)
+              console.log("Активирован режим удаления кораблей", gameState)
+            }}
+            label="Перейти в режим удаления кораблей"
+          />
+          <PrimaryButton
+            onClick={() => {
+              setGameState(GAME_STATE.INIT);
+              console.log("Активирован ленивый режим", gameState)
+            }}
+            label="Ничего не делать"
           />
           <PrimaryButton
             onClick={() => {
@@ -35,21 +56,25 @@ export const App = observer(() => {
         </Box>
         }
       </Box>
-      {currentField.game ?
+      {currentBattle.game ?
         <Box direction="row">
           <PrimaryButton
             onClick={() => {
-              currentField.shotCount = 0;
-              currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+              currentBattle.user.shotCount = 0;
+              currentBattle.user.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+              currentBattle.opponent.shotCount = 0;
+              currentBattle.opponent.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
             }}
             label="Сыграть еще"
             size="large"
           />
           <PrimaryButton
             onClick={() => {
-              currentField.game = false;
-              currentField.shotCount = 0;
-              currentField.clearField();
+              currentBattle.game = false;
+              currentBattle.user.shotCount = 0;
+              currentBattle.user.clearField();
+              currentBattle.opponent.shotCount = 0;
+              currentBattle.opponent.clearField();
             }}
             label="Закончить игру"
             size="large"
@@ -57,17 +82,18 @@ export const App = observer(() => {
         </Box> :
         <PrimaryButton
           onClick={() => {
-            currentField.game = true;
-            currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+            currentBattle.game = true;
+            currentBattle.user.clearField();
+            currentBattle.opponent.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
+            currentField.clearField()
           }}
           label="Начать игру"
           size="large"
         />
       }
-      <Box direction="row">
-        <Info />
-        {currentField.game && <Info dead />}
-      </Box>
+      {!currentBattle.game && <Box direction="row" alignContent='between'>
+        <Info field = {currentField} />
+      </Box>}
       {/* <Box>
         {
           currentField.field.map((item, rowIndex) => {

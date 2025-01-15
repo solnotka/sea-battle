@@ -1,7 +1,6 @@
-import { currentField } from "./Field/FieldStore";
 import { Box } from 'grommet'
 import { observer } from "mobx-react-lite";
-import { GAME_STATE, IField } from "./interfaces";
+import { IField } from "./interfaces";
 import { Cell } from "./Cell/Cell";
 import { useState } from "react";
 import { checkForOne } from "./Field/utils";
@@ -9,14 +8,12 @@ import { checkForOne } from "./Field/utils";
 const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
 const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-export const Field = observer(({ viewField = currentField, gameState = GAME_STATE.INIT }: { viewField?: IField, gameState?: GAME_STATE }) => {
+export const Field = observer(({ viewField }: { viewField: IField }) => {
 
     const [selectedCell, setSelectedCell] = useState([-1, -1])
 
     const isCellSelected = (row: number, col: number) => {
-        if (startedCell.includes(-1)) {
-            return row === selectedCell[0] && col === selectedCell[1]
-        } else return false
+        return row === selectedCell[0] && col === selectedCell[1]
     }
 
     const [startedCell, setStartedCell] = useState([-1, -1]);
@@ -81,7 +78,6 @@ export const Field = observer(({ viewField = currentField, gameState = GAME_STAT
                                     return (
                                         <Cell
                                             field={viewField}
-                                            gameState={gameState}
                                             cell={cell}
                                             rowIndex={rowIndex}
                                             columnIndex={columnIndex}

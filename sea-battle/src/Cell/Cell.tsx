@@ -5,7 +5,6 @@ import { Close } from "grommet-icons";
 
 interface ICell extends BoxExtendedProps {
     field: IField,
-    gameState: GAME_STATE,
     cell: CELL_STATE,
     rowIndex: number,
     columnIndex: number,
@@ -13,29 +12,29 @@ interface ICell extends BoxExtendedProps {
     startedCell: number[],
     isCellSelected: boolean,
 }
-export const Cell = ({ field, gameState, cell, rowIndex, columnIndex, addFunction, startedCell, isCellSelected, ...props }: ICell) => {
+export const Cell = ({ field, cell, rowIndex, columnIndex, addFunction, startedCell, isCellSelected, ...props }: ICell) => {
 
     return (
         <Box
             className="field-item"
             key={rowIndex * 10 + columnIndex}
             onClick={() => {
-                if (gameState === GAME_STATE.ADD_SHIP) {
+                if (field.gameState === GAME_STATE.ADD_SHIP) {
                     addFunction(rowIndex, columnIndex)
-                } else if (gameState === GAME_STATE.REMOVE_SHIP) {
+                } else if (field.gameState === GAME_STATE.REMOVE_SHIP) {
                     field.removeShip(rowIndex, columnIndex)
-                } else if (gameState === GAME_STATE.SHOOT) {
+                } else if (field.gameState === GAME_STATE.SHOOT) {
                     shootOnClick(field, cell, rowIndex, columnIndex)
                 } else
-                    console.log(gameState)
+                    console.log(field.gameState)
             }}
             style={{
                 backgroundColor:
-                    gameState === GAME_STATE.ADD_SHIP && !!getStartedColor(field.field, rowIndex, columnIndex, startedCell) ?
+                    field.gameState === GAME_STATE.ADD_SHIP && !!getStartedColor(field.field, rowIndex, columnIndex, startedCell) ?
                         getStartedColor(field.field, rowIndex, columnIndex, startedCell) :
-                        gameState === GAME_STATE.ADD_SHIP && isCellSelected ?
+                        field.gameState === GAME_STATE.ADD_SHIP && isCellSelected ?
                             getSelectedColor(field.field, rowIndex, columnIndex) :
-                            getBackgroundColor(cell, gameState)
+                            getBackgroundColor(cell, field.gameState)
             }}
             {...props}
         >

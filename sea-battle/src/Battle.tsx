@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import { FieldStore } from "./Field/FieldStore";
-import { CELL_STATE, IBattle, SHIP_DIRECTION } from "./interfaces";
+import { CELL_STATE, GAME_STATE, IBattle, SHIP_DIRECTION } from "./interfaces";
 import { checkSpace } from "./Field/utils";
 
 export class Battle implements IBattle {
@@ -17,7 +17,7 @@ export class Battle implements IBattle {
                 game: observable,
 
             });
-        this.opponent.game = true;
+        this.opponent.gameState = GAME_STATE.SHOOT;
     }
 
     addShip(row: number, column: number, size: number, direction: SHIP_DIRECTION) {

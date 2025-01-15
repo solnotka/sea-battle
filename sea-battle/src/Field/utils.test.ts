@@ -1,5 +1,5 @@
 import { SHIP_DIRECTION } from "../interfaces";
-import { checkForOne, checkLineForShooting, checkSpace, getShipCount } from "./utils";
+import { checkForOne, checkLineForShooting, checkSpace, getCheckParams, getShipCount } from "./utils";
 
 export const field_1 = [
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
@@ -131,4 +131,28 @@ test('checkLineForShooting 4', () => {
 
 test('checkLineForShooting 5', () => {
     expect(checkLineForShooting(field_4, 3, 7, false, false)).toEqual([])
+})
+
+test('getCheckParams 1', () => {
+    expect(getCheckParams(5, 5, 5, 5)).toEqual([5, 5, 1, SHIP_DIRECTION.VERTICAL])
+})
+
+test('getCheckParams 2', () => {
+    expect(getCheckParams(5, 5, 6, 6)).toEqual(false)
+})
+
+test('getCheckParams 3', () => {
+    expect(getCheckParams(5, 5, 5, 7)).toEqual([5, 5, 3, SHIP_DIRECTION.HORIZONTAL])
+})
+
+test('getCheckParams 4', () => {
+    expect(getCheckParams(5, 5, 7, 5)).toEqual([5, 5, 3, SHIP_DIRECTION.VERTICAL])
+})
+
+test('getCheckParams 5', () => {
+    expect(getCheckParams(5, 5, 5, 4)).toEqual([5, 4, 2, SHIP_DIRECTION.HORIZONTAL])
+})
+
+test('getCheckParams 6', () => {
+    expect(getCheckParams(5, 5, 1, 5)).toEqual([1, 5, 5, SHIP_DIRECTION.VERTICAL])
 })

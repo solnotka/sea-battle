@@ -5,39 +5,36 @@ import { currentField } from './Field/FieldStore';
 import { Box } from 'grommet';
 import { Info } from './Info';
 import { observer } from 'mobx-react-lite';
-import { useState } from 'react';
 import { BattleView } from './BattleView';
 import { currentBattle } from './Battle';
 import { GAME_STATE } from './interfaces';
 
 export const App = observer(() => {
-  const [gameState, setGameState] = useState(GAME_STATE.INIT);
-  // const [endCell, setEndCell] = useState([-1, -1])
 
   return (
     <div className="App">
       <Box direction="row">
-        {currentBattle.game ? <BattleView / > : <Field gameState = {gameState} />}
+        {currentBattle.game ? <BattleView / > : <Field viewField = {currentField} />}
          {!currentBattle.game && <Box justify="center">
           <Box width="35px"></Box>
           <PrimaryButton
             onClick={() => {
-              setGameState(GAME_STATE.ADD_SHIP);
-              console.log("Активирован режим добавления кораблей", gameState)
+              currentField.gameState = GAME_STATE.ADD_SHIP;
+              console.log("Активирован режим добавления кораблей", currentField.gameState)
             }}
             label="Перейти в режим добавления кораблей"
           />
           <PrimaryButton
             onClick={() => {
-              setGameState(GAME_STATE.REMOVE_SHIP)
-              console.log("Активирован режим удаления кораблей", gameState)
+              currentField.gameState = GAME_STATE.REMOVE_SHIP;
+              console.log("Активирован режим удаления кораблей", currentField.gameState)
             }}
             label="Перейти в режим удаления кораблей"
           />
           <PrimaryButton
             onClick={() => {
-              setGameState(GAME_STATE.INIT);
-              console.log("Активирован ленивый режим", gameState)
+              currentField.gameState = GAME_STATE.INIT;
+              console.log("Активирован ленивый режим", currentField.gameState)
             }}
             label="Ничего не делать"
           />

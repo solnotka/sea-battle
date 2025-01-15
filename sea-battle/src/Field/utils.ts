@@ -19,24 +19,26 @@ export const checkForOne = (field: number[][], row: number, column: number) => {
     return true;
 };
 
-export const getCheckParams = (startRow: number, startCol: number, endRow: number, endCol: number) => {
+export const getCheckParams = (startRow: number, startCol: number, endRow: number, endCol: number) :
+    [number, number, number, SHIP_DIRECTION] => {
+
     let size = 0;
     let direction = SHIP_DIRECTION.VERTICAL;
     const minRow = startRow <= endRow ? startRow : endRow;
     const minCol = startCol <= endCol ? startCol : endCol
 
     if (startRow !== endRow && startCol !== endCol) {
-        return [-1, 0, 1, SHIP_DIRECTION.VERTICAL]
-    } else 
-    if (startRow === endRow && startCol === endCol) {
-        size = 1;
-    } else if (startRow === endRow && startCol !== endCol) {
-        size = Math.abs(endCol - startCol) + 1;
-        direction = SHIP_DIRECTION.HORIZONTAL
-    }else if (startRow !== endRow && startCol === endCol) {
-        size = Math.abs(endRow - startRow) + 1;
-        direction = SHIP_DIRECTION.VERTICAL
-    }
+        return [-1, -1, -1, SHIP_DIRECTION.VERTICAL]
+    } else
+        if (startRow === endRow && startCol === endCol) {
+            size = 1;
+        } else if (startRow === endRow && startCol !== endCol) {
+            size = Math.abs(endCol - startCol) + 1;
+            direction = SHIP_DIRECTION.HORIZONTAL
+        } else if (startRow !== endRow && startCol === endCol) {
+            size = Math.abs(endRow - startRow) + 1;
+            direction = SHIP_DIRECTION.VERTICAL
+        }
     return [minRow, minCol, size, direction]
 }
 

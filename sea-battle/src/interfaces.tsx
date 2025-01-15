@@ -1,3 +1,5 @@
+import { PLAYER } from "./Battle"
+
 export interface IField {
     field: number[][],
     gameState: GAME_STATE
@@ -5,6 +7,7 @@ export interface IField {
     shipCount: Record<number | string, number>,
     deadShipCount: Record<number | string, number>,
     addShip: (size: number) => void,
+    shoot: (row: number, column: number) => void,
     addShipByUser: (startRow : number, startCol : number, endRow : number, endCol : number) => void,
     removeShip: (row: number, column: number) => void,
     shootShip: (row: number, column: number) => void,
@@ -13,9 +16,10 @@ export interface IField {
 }
 
 export interface IBattle {
-    user: IField,
-    opponent: IField,
-    game: boolean,
+    userField: IField,
+    opponentField: IField,
+    isGameStarted: boolean,
+    shoot: (player: PLAYER, row: number, col: number) => void
 }
 
 export enum CELL_STATE {

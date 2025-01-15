@@ -1,30 +1,39 @@
 import { Box } from 'grommet'
 import { observer } from "mobx-react-lite";
-import { IField } from "./interfaces";
+import { GAME_STATE, IBattle, IField } from "./interfaces";
 import { Cell } from "./Cell/Cell";
 import { useState } from "react";
 import { checkForOne } from "./Field/utils";
+import { isCellInCoords } from './Cell/cellUtils';
+import { PLAYER } from './Battle';
 
 const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
 const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-export const Field = observer(({ viewField }: { viewField: IField }) => {
-
+export const Field = observer(({ viewField, battle, player }:
+    { viewField: IField, battle?: IBattle, player?: PLAYER }
+) => {
     const [selectedCell, setSelectedCell] = useState([-1, -1])
+    const [startedCell, setStartedCell] = useState([-1, -1]);
+
+    const isStart = !startedCell.includes(-1);
 
     const isCellSelected = (row: number, col: number) => {
         return row === selectedCell[0] && col === selectedCell[1]
     }
 
-    const [startedCell, setStartedCell] = useState([-1, -1]);
-    const isStart = !startedCell.includes(-1);
-
-    const addFunction = (row: number, column: number) => {
-        if (!isStart && checkForOne(viewField.field, row, column)) {
-            setStartedCell([row, column]);
-        } else if (isStart) {
-            viewField.addShipByUser(startedCell[0], startedCell[1], row, column);
-            setStartedCell([-1, -1])
+    const onClickHandler = (row: number, column: number) => {
+        if (viewField.gameState === GAME_STATE.ADD_SHIP) {
+            if (!isStart && checkForOne(viewField.field, row, column)) {
+                setStartedCell([row, column]);
+            } else if (isStart) {
+                viewField.addShipByUser(startedCell[0], startedCell[1], row, column);
+                setStartedCell([-1, -1])
+            }
+        } else if (viewField.gameState === GAME_STATE.REMOVE_SHIP) {
+            viewField.removeShip(row, column)
+        } else if (viewField.gameState === GAME_STATE.SHOOT && battle && player) {
+            battle.shoot(player, row, column);
         }
     }
 
@@ -81,10 +90,17 @@ export const Field = observer(({ viewField }: { viewField: IField }) => {
                                             cell={cell}
                                             rowIndex={rowIndex}
                                             columnIndex={columnIndex}
-                                            addFunction={() => addFunction(rowIndex, columnIndex)}
                                             startedCell={startedCell}
-                                            isCellSelected={isCellSelected(rowIndex, columnIndex)}
+                                            isCellSelected={
+                                                isCellSelected(rowIndex, columnIndex) ||
+                                                isCellInCoords(
+                                                    { x: rowIndex, y: columnIndex },
+                                                    { x: startedCell[0], y: startedCell[1] },
+                                                    { x: selectedCell[0], y: selectedCell[1] }
+                                                )
+                                            }
                                             onMouseOver={() => setSelectedCell([rowIndex, columnIndex])}
+                                            onClick={() => onClickHandler(rowIndex, columnIndex)}
                                         />
                                     )
                                 })}

@@ -66,8 +66,8 @@ export class FieldStore implements IField {
 
     addShipByUser(startRow: number, startCol: number, endRow: number, endCol: number) {
 
-        const [minRow, minCol, size, direction] = getCheckParams(startRow, startCol, endRow, endCol) 
-        
+        const [minRow, minCol, size, direction] = getCheckParams(startRow, startCol, endRow, endCol)
+
         if (minRow !== -1 && checkSpace(this.field, minRow, minCol, size, direction)) {
             if (direction === SHIP_DIRECTION.VERTICAL) {
                 for (let i = minRow; i < minRow + size; i++) {
@@ -80,92 +80,105 @@ export class FieldStore implements IField {
                 }
             }
         }
-}
+    }
 
-removeShip(row: number, column: number) {
-    if (this.field[row][column] === CELL_STATE.OCCUPIED) {
-        this.field[row][column] = CELL_STATE.EMPTY;
+    removeShip(row: number, column: number) {
+        if (this.field[row][column] === CELL_STATE.OCCUPIED) {
+            this.field[row][column] = CELL_STATE.EMPTY;
 
-        const handleLine = (row: number, column: number, rowDirection: boolean, forward: boolean) => {
+            const handleLine = (row: number, column: number, rowDirection: boolean, forward: boolean) => {
 
-            for (
-                let i = rowDirection ? column : row;
-                forward ? i < 10 : i >= 0;
-                forward ? i++ : i--
-            ) {
-                if ((rowDirection && i === column) || (!rowDirection && i === row)) {
-                    continue;
-                } else if ((rowDirection && this.field[row][i] === CELL_STATE.EMPTY) ||
-                    (!rowDirection && this.field[i][column] === CELL_STATE.EMPTY)) {
-                    break;
-                } else if (rowDirection) {
-                    this.field[row][i] = CELL_STATE.EMPTY;
-                } else if (!rowDirection) {
-                    this.field[i][column] = CELL_STATE.EMPTY;
+                for (
+                    let i = rowDirection ? column : row;
+                    forward ? i < 10 : i >= 0;
+                    forward ? i++ : i--
+                ) {
+                    if ((rowDirection && i === column) || (!rowDirection && i === row)) {
+                        continue;
+                    } else if ((rowDirection && this.field[row][i] === CELL_STATE.EMPTY) ||
+                        (!rowDirection && this.field[i][column] === CELL_STATE.EMPTY)) {
+                        break;
+                    } else if (rowDirection) {
+                        this.field[row][i] = CELL_STATE.EMPTY;
+                    } else if (!rowDirection) {
+                        this.field[i][column] = CELL_STATE.EMPTY;
+                    }
                 }
             }
+
+            for (let boo of [true, false]) {
+                for (let lean of [true, false]) {
+                    handleLine(row, column, boo, lean)
+                }
+            }
+
         }
+    }
+
+    shootShip(row: number, column: number) {
+
+        if (this.field[row][column] === CELL_STATE.OCCUPIED) {
+            this.field[row][column] = CELL_STATE.WOUNDED;
+        }
+
+        let wounds = [[row, column]];
 
         for (let boo of [true, false]) {
             for (let lean of [true, false]) {
-                handleLine(row, column, boo, lean)
+                let newWounds = checkLineForShooting(this.field, row, column, boo, lean)
+                if (!newWounds) {
+                    return;
+                } else wounds = wounds.concat(newWounds)
             }
         }
 
-    }
-}
+        wounds.forEach((item) => {
+            let [rowIndex, colIndex] = item;
+            this.field[rowIndex][colIndex] = CELL_STATE.DROWNED;
 
-shootShip(row: number, column: number) {
-
-    if (this.field[row][column] === CELL_STATE.OCCUPIED) {
-        this.field[row][column] = CELL_STATE.WOUNDED;
-    }
-
-    let wounds = [[row, column]];
-
-    for (let boo of [true, false]) {
-        for (let lean of [true, false]) {
-            let newWounds = checkLineForShooting(this.field, row, column, boo, lean)
-            if (!newWounds) {
-                return;
-            } else wounds = wounds.concat(newWounds)
-        }
-    }
-
-    wounds.forEach((item) => {
-        let [rowIndex, colIndex] = item;
-        this.field[rowIndex][colIndex] = CELL_STATE.DROWNED;
-
-        for (
-            let r = rowIndex - 1; r <= rowIndex + 1; r++
-        ) {
             for (
-                let c = colIndex - 1; c <= colIndex + 1; c++
+                let r = rowIndex - 1; r <= rowIndex + 1; r++
             ) {
-                if (r < 0 || r > 9 || c < 0 || c > 9) {
-                    continue
-                } else if (this.field[r][c] === CELL_STATE.EMPTY) {
-                    this.field[r][c] = CELL_STATE.EMPTY_KNOWN;
+                for (
+                    let c = colIndex - 1; c <= colIndex + 1; c++
+                ) {
+                    if (r < 0 || r > 9 || c < 0 || c > 9) {
+                        continue
+                    } else if (this.field[r][c] === CELL_STATE.EMPTY) {
+                        this.field[r][c] = CELL_STATE.EMPTY_KNOWN;
+                    }
                 }
             }
+        })
+
+    }
+
+
+    //Эта функция у меня добавляет сразу все корабли. Для каждого нужно передать размер
+    changeField(arr: number[]) {
+        this.clearField()
+        arr.map((item) => this.addShip(item));
+
+        return this.field;
+    }
+
+    clearField() {
+        this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
+    }
+
+    shoot(rowIndex: number, columnIndex: number) {
+        const cell = this.field[rowIndex][columnIndex];
+
+        if (cell === CELL_STATE.EMPTY) {
+            this.field[rowIndex][columnIndex] = CELL_STATE.EMPTY_KNOWN;
+            this.shotCount++;
+            return false;
+        } else if (cell === CELL_STATE.OCCUPIED) {
+            this.shootShip(rowIndex, columnIndex);
+            this.shotCount++;
+            return true;
         }
-    })
-
-}
-
-
-//Эта функция у меня добавляет сразу все корабли. Для каждого нужно передать размер
-changeField(arr: number[]) {
-    this.clearField()
-    arr.map((item) => this.addShip(item));
-
-    return this.field;
-}
-
-clearField() {
-    this.field = Array.from(Array(10), () => { return (Array(10).fill(0)); });
-}
-
+    }
 }
 
 export const currentField = new FieldStore()

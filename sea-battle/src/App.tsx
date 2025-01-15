@@ -14,8 +14,9 @@ export const App = observer(() => {
   return (
     <div className="App">
       <Box direction="row">
-        {currentBattle.game ? <BattleView / > : <Field viewField = {currentField} />}
-         {!currentBattle.game && <Box justify="center">
+        {currentBattle.isGameStarted ? <BattleView / > : <Field viewField = {currentField} />
+        }
+         {!currentBattle.isGameStarted && <Box justify="center">
           <Box width="35px"></Box>
           <PrimaryButton
             onClick={() => {
@@ -53,25 +54,25 @@ export const App = observer(() => {
         </Box>
         }
       </Box>
-      {currentBattle.game ?
+      {currentBattle.isGameStarted ?
         <Box direction="row">
           <PrimaryButton
             onClick={() => {
-              currentBattle.user.shotCount = 0;
-              currentBattle.user.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
-              currentBattle.opponent.shotCount = 0;
-              currentBattle.opponent.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+              currentBattle.userField.shotCount = 0;
+              currentBattle.userField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+              currentBattle.opponentField.shotCount = 0;
+              currentBattle.opponentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
             }}
             label="Сыграть еще"
             size="large"
           />
           <PrimaryButton
             onClick={() => {
-              currentBattle.game = false;
-              currentBattle.user.shotCount = 0;
-              currentBattle.user.clearField();
-              currentBattle.opponent.shotCount = 0;
-              currentBattle.opponent.clearField();
+              currentBattle.isGameStarted = false;
+              currentBattle.userField.shotCount = 0;
+              currentBattle.userField.clearField();
+              currentBattle.opponentField.shotCount = 0;
+              currentBattle.opponentField.clearField();
             }}
             label="Закончить игру"
             size="large"
@@ -79,16 +80,15 @@ export const App = observer(() => {
         </Box> :
         <PrimaryButton
           onClick={() => {
-            currentBattle.game = true;
-            currentBattle.user.clearField();
-            currentBattle.opponent.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
-            currentField.clearField()
+            currentBattle.isGameStarted = true;
+            currentBattle.userField = currentField;
+            currentBattle.opponentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
           }}
           label="Начать игру"
           size="large"
         />
       }
-      {!currentBattle.game && <Box direction="row" alignContent='between'>
+      {!currentBattle.isGameStarted && <Box direction="row" alignContent='between'>
         <Info field = {currentField} />
       </Box>}
       {/* <Box>

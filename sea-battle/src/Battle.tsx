@@ -1,38 +1,49 @@
 import { makeObservable, observable } from "mobx";
 import { FieldStore } from "./Field/FieldStore";
-import { CELL_STATE, GAME_STATE, IBattle, SHIP_DIRECTION } from "./interfaces";
-import { checkSpace } from "./Field/utils";
+import { GAME_STATE, IBattle } from "./interfaces";
+
+export enum PLAYER {
+    USER = 'USER',
+    OPPONENT = 'OPPONENT',
+}
 
 export class Battle implements IBattle {
+    userField = new FieldStore();
+    opponentField = new FieldStore();
+    isGameStarted = false
 
-    user = new FieldStore();
-    opponent = new FieldStore();
-    game = false
+    // В кого стреляем
+    shootOrder: PLAYER = PLAYER.OPPONENT;
 
     constructor() {
         makeObservable(this,
             {
-                user: observable,
-                opponent: observable,
-                game: observable,
+                userField: observable,
+                opponentField: observable,
+                isGameStarted: observable,
 
             });
-        this.opponent.gameState = GAME_STATE.SHOOT;
+        this.opponentField.gameState = GAME_STATE.SHOOT;
     }
 
-    addShip(row: number, column: number, size: number, direction: SHIP_DIRECTION) {
-        let isSpace = checkSpace(this.user.field, row, column, size, direction);
+    shoot = (player: PLAYER, row: number, col: number) => {
+        if(this.shootOrder === player) {
+            switch(player) {
+                case PLAYER.USER:                    
+                    if(this.userField.shoot(row, col)) {
+                        this.shootOrder = PLAYER.USER;
+                    } else {
+                        this.shootOrder = PLAYER.OPPONENT;
+                    }
+                break;    
 
-        if (isSpace) {
-            if (direction === SHIP_DIRECTION.VERTICAL) {
-                for (let i = row; i < row + size; i++) {
-                    this.user.field[i][column] = CELL_STATE.OCCUPIED;
-                }
-
-            } else if (direction === SHIP_DIRECTION.HORIZONTAL) {
-                for (let i = column; i < column + size; i++) {
-                    this.user.field[row][i] = CELL_STATE.OCCUPIED;
-                }
+                case PLAYER.OPPONENT:
+                    if(this.opponentField.shoot(row, col)) {
+                        this.shootOrder = PLAYER.OPPONENT;
+                    } else {
+                        this.shootOrder = PLAYER.USER;
+                    }
+                break;
             }
         }
     }

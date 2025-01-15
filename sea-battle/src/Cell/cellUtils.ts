@@ -34,12 +34,35 @@ export const getSelectedColor = (field : number[][], row : number, column : numb
 //     })
 // }
 
-export const shootOnClick = (field: IField, cell: CELL_STATE, rowIndex: number, columnIndex: number) => {
-    if (cell === CELL_STATE.EMPTY) {
-        field.field[rowIndex][columnIndex] = CELL_STATE.EMPTY_KNOWN;
-        field.shotCount++;
-    } else if (cell === CELL_STATE.OCCUPIED) {
-        field.shootShip(rowIndex, columnIndex);
-        field.shotCount++;
+export interface ICoord {
+    x: number;
+    y: number;
+}
+
+export const isCellInCoords = (cell: ICoord, start: ICoord, end: ICoord): boolean => {
+    if (cell.x === end.x && cell.x === start.x) {
+        return (cell.y <= end.y && cell.y >= start.y) || 
+        (cell.y >= end.y && cell.y <= start.y);
     }
+
+    if (cell.y === end.y && cell.y === start.y) {
+        return (cell.x <= end.x && cell.x >= start.x) || 
+        (cell.x >= end.x && cell.x <= start.x);
+    }
+
+    // if (cell.x === end.x && cell.x === start.x) {
+    //     const yStart = Math.min(start.y, end.y);
+    //     const yEnd = Math.max(start.y, end.y);
+
+    //     return cell.y <= yEnd && cell.y >= yStart;
+    // }
+
+    // if (cell.y === end.y && cell.y === start.y) {
+    //     const xStart = Math.min(start.x, end.x);
+    //     const xEnd = Math.max(start.x, end.x);
+
+    //     return cell.x <= xEnd && cell.x >= xStart;
+    // }
+
+    return false;
 }

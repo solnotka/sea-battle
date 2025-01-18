@@ -1,5 +1,5 @@
 import { SHIP_DIRECTION } from "../interfaces";
-import { checkForOne, checkLineForShooting, checkSpace, getCheckParams, getShipCount } from "./utils";
+import { checkForOne, collectWounds, checkSpace, getCheckParams, getShipCount } from "./utils";
 
 export const field_1 = [
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
@@ -114,23 +114,23 @@ test('getShipCount 5', () => {
 })
 
 test('checkLineForShooting 1', () => {
-    expect(checkLineForShooting(field_4, 8, 0, false, true)).toEqual([[9, 0]])
+    expect(collectWounds(field_4, 8, 0, false, true)).toEqual([[9, 0]])
 })
 
 test('checkLineForShooting 2', () => {
-    expect(checkLineForShooting(field_4, 8, 0, false, false)).toEqual([])
+    expect(collectWounds(field_4, 8, 0, false, false)).toEqual([])
 })
 
 test('checkLineForShooting 3', () => {
-    expect(checkLineForShooting(field_4, 4, 4, true, true)).toEqual([])
+    expect(collectWounds(field_4, 4, 4, true, true)).toEqual([])
 })
 
 test('checkLineForShooting 4', () => {
-    expect(checkLineForShooting(field_4, 7, 7, true, true)).toEqual(null)
+    expect(collectWounds(field_4, 7, 7, true, true)).toEqual(null)
 })
 
 test('checkLineForShooting 5', () => {
-    expect(checkLineForShooting(field_4, 3, 7, false, false)).toEqual([])
+    expect(collectWounds(field_4, 3, 7, false, false)).toEqual([])
 })
 
 test('getCheckParams 1', () => {

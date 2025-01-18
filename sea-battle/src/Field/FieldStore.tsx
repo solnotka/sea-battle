@@ -1,6 +1,6 @@
 import { computed, makeObservable, observable } from "mobx";
 import { CELL_STATE, GAME_STATE, IField, SHIP_DIRECTION } from "../interfaces";
-import { checkLineForShooting, checkSpace, getCheckParams, getShipCount } from "./utils";
+import { collectWounds, checkSpace, getCheckParams, getShipCount } from "./utils";
 
 export class FieldStore implements IField {
 
@@ -125,7 +125,7 @@ export class FieldStore implements IField {
 
         for (let boo of [true, false]) {
             for (let lean of [true, false]) {
-                let newWounds = checkLineForShooting(this.field, row, column, boo, lean)
+                let newWounds = collectWounds(this.field, row, column, boo, lean)
                 if (!newWounds) {
                     return;
                 } else wounds = wounds.concat(newWounds)
@@ -144,15 +144,13 @@ export class FieldStore implements IField {
                 ) {
                     if (r < 0 || r > 9 || c < 0 || c > 9) {
                         continue
-                    } else if (this.field[r][c] === CELL_STATE.EMPTY) {
-                        this.field[r][c] = CELL_STATE.EMPTY_KNOWN;
+                    } else if (this.field[r][c] === CELL_STATE.EMPTY || this.field[r][c] === CELL_STATE.EMPTY_KNOWN) {
+                        this.field[r][c] = CELL_STATE.EMPTY_KNOWN_HOORAY;
                     }
                 }
             }
         })
-
     }
-
 
     //Эта функция у меня добавляет сразу все корабли. Для каждого нужно передать размер
     changeField(arr: number[]) {

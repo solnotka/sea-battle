@@ -1,7 +1,7 @@
 import { Box, BoxExtendedProps } from "grommet";
-import { CELL_STATE, GAME_STATE, IField } from "../interfaces";
-import { getBackgroundColor, getSelectedColor, getStartedColor } from "./cellUtils";
-import { Close } from "grommet-icons";
+import { CELL_STATE, IField } from "../interfaces";
+import { background } from "./cellUtils";
+import { Close, StatusGoodSmall } from "grommet-icons";
 
 interface ICell extends BoxExtendedProps {
     field: IField,
@@ -9,24 +9,25 @@ interface ICell extends BoxExtendedProps {
     rowIndex: number,
     columnIndex: number,
     startedCell: number[],
-    isCellSelected: boolean,
+    selectedCell: number[],
+    isCellInPreview: boolean,
 }
-export const Cell = ({ field, cell, rowIndex, columnIndex, startedCell, isCellSelected, ...props }: ICell) => {
+export const Cell = ({ field, cell, rowIndex, columnIndex, startedCell, selectedCell, isCellInPreview, ...props }: ICell) => {
+
     return (
         <Box
+            align="center"
+            justify="center"
             className="field-item"
             key={rowIndex * 10 + columnIndex}
-            style={{
-                backgroundColor:
-                    field.gameState === GAME_STATE.ADD_SHIP && !!getStartedColor(field.field, rowIndex, columnIndex, startedCell) ?
-                        getStartedColor(field.field, rowIndex, columnIndex, startedCell) :
-                        field.gameState === GAME_STATE.ADD_SHIP && isCellSelected ?
-                            getSelectedColor(field.field, rowIndex, columnIndex) :
-                            getBackgroundColor(cell, field.gameState)
-            }}
+            style={{ backgroundColor: background(field, cell, rowIndex, columnIndex, startedCell, selectedCell, isCellInPreview) }}
             {...props}
         >
-            {cell === CELL_STATE.EMPTY_KNOWN && <Close size="35px" />}
+            {cell === CELL_STATE.EMPTY_KNOWN ?
+                <StatusGoodSmall color="black" size="5px" /> :
+                cell === CELL_STATE.EMPTY_KNOWN_HOORAY ?
+                    <Close size="35px" /> : ""
+            }
         </Box>
     )
 }

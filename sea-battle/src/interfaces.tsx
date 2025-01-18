@@ -26,6 +26,7 @@ export enum CELL_STATE {
     EMPTY = 0,
     OCCUPIED = 1,
     EMPTY_KNOWN = 0.5,
+    EMPTY_KNOWN_HOORAY = 0.6,
     WOUNDED = -1,
     DROWNED = -2
 }
@@ -40,4 +41,9 @@ export enum GAME_STATE {
 export enum SHIP_DIRECTION {
     HORIZONTAL = "horizontal",
     VERTICAL = "vertical"
+}
+
+export interface ICoord {
+    x: number;
+    y: number;
 }

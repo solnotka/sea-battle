@@ -18,10 +18,6 @@ export const Field = observer(({ viewField, battle, player }:
 
     const isStart = !startedCell.includes(-1);
 
-    const isCellSelected = (row: number, col: number) => {
-        return row === selectedCell[0] && col === selectedCell[1]
-    }
-
     const onClickHandler = (row: number, column: number) => {
         if (viewField.gameState === GAME_STATE.ADD_SHIP) {
             if (!isStart && checkForOne(viewField.field, row, column)) {
@@ -91,14 +87,13 @@ export const Field = observer(({ viewField, battle, player }:
                                             rowIndex={rowIndex}
                                             columnIndex={columnIndex}
                                             startedCell={startedCell}
-                                            isCellSelected={
-                                                isCellSelected(rowIndex, columnIndex) ||
+                                            selectedCell={selectedCell}
+                                            isCellInPreview={
                                                 isCellInCoords(
                                                     { x: rowIndex, y: columnIndex },
                                                     { x: startedCell[0], y: startedCell[1] },
                                                     { x: selectedCell[0], y: selectedCell[1] }
-                                                )
-                                            }
+                                                )}
                                             onMouseOver={() => setSelectedCell([rowIndex, columnIndex])}
                                             onClick={() => onClickHandler(rowIndex, columnIndex)}
                                         />

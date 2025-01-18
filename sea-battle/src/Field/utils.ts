@@ -124,7 +124,7 @@ export const getShipCount = (field: number[][], ind: number[]) => {
     return shipMap
 }
 
-export const checkLineForShooting = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {
+export const collectWounds = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {
 
     let lineWounds = []
 
@@ -135,8 +135,8 @@ export const checkLineForShooting = (field: number[][], row: number, column: num
     ) {
         if ((rowDirection && i === column) || (!rowDirection && i === row)) {
             continue;
-        } else if ((rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN].includes(field[row][i])) ||
-            (!rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN].includes(field[i][column]))) {
+        } else if ((rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN, CELL_STATE.EMPTY_KNOWN_HOORAY].includes(field[row][i])) ||
+            (!rowDirection && [CELL_STATE.EMPTY, CELL_STATE.EMPTY_KNOWN, CELL_STATE.EMPTY_KNOWN_HOORAY].includes(field[i][column]))) {
             return lineWounds;
         } else if (rowDirection && field[row][i] === CELL_STATE.WOUNDED) {
             lineWounds.push([row, i])

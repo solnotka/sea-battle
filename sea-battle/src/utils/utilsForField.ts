@@ -1,4 +1,4 @@
-import { CELL_STATE, SHIP_DIRECTION } from "../interfaces";
+import { CELL_STATE, IShipMap, SHIP_DIRECTION } from "../interfaces";
 
 
 // Это чтобы проверить квадратик 9×9 вокруг нужной клетки
@@ -70,7 +70,7 @@ export const checkSpace = (field: number[][], row: number, column: number, size:
 
 export const getShipCount = (field: number[][], ind: number[]) => {
 
-    let shipMap: Record<number | string, number> = {};
+    let shipMap: IShipMap = {"all" : 0};
     let count = 0;
     let size = 0;
 
@@ -122,6 +122,16 @@ export const getShipCount = (field: number[][], ind: number[]) => {
     }
     shipMap["all"] = count
     return shipMap
+}
+
+export const isFieldCorrect = (shipMap : IShipMap) => {
+    if (shipMap["all"] === 10 &&
+        shipMap[1] && shipMap[1] === 4 &&
+        shipMap[2] && shipMap[2] === 3 &&
+        shipMap[3] && shipMap[3] === 2 &&
+        shipMap[4] && shipMap[4] === 1) {
+            return true
+        } else return false    
 }
 
 export const collectWounds = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {

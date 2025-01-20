@@ -1,6 +1,6 @@
 import { Box, BoxExtendedProps } from "grommet";
 import { CELL_STATE, IField } from "../interfaces";
-import { background } from "./cellUtils";
+import { getBackgroundColor } from "../utils/utilsForCell";
 import { Close, StatusGoodSmall } from "grommet-icons";
 
 interface ICell extends BoxExtendedProps {
@@ -20,7 +20,7 @@ export const Cell = ({ field, cell, rowIndex, columnIndex, startedCell, selected
             justify="center"
             className="field-item"
             key={rowIndex * 10 + columnIndex}
-            style={{ backgroundColor: background(field, cell, rowIndex, columnIndex, startedCell, selectedCell, isCellInPreview) }}
+            style={{ backgroundColor: getBackgroundColor(field, cell, rowIndex, columnIndex, startedCell, selectedCell, isCellInPreview) }}
             {...props}
         >
             {cell === CELL_STATE.EMPTY_KNOWN ?

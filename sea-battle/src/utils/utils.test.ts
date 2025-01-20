@@ -1,5 +1,5 @@
 import { SHIP_DIRECTION } from "../interfaces";
-import { checkForOne, collectWounds, checkSpace, getCheckParams, getShipCount } from "./utils";
+import { checkForOne, collectWounds, checkSpace, getCheckParams, getShipCount } from "./utilsForField";
 
 export const field_1 = [
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],

@@ -1,6 +1,7 @@
 import { Button } from "grommet"
+import { IButton } from "../interfaces"
 
-export const PrimaryButton = ( { onClick, label, size="medium", ...props }: { onClick: ()=>void, label: string, size?: string  }) => {
+export const PrimaryButton = ( { onClick, label, size="medium", ...props }: IButton ) => {
     return (
         <Button
         className = "clear-button"

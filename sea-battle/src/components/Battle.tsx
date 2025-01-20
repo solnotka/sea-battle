@@ -1,11 +1,10 @@
 import { Box } from "grommet";
 import { observer } from "mobx-react-lite";
 import { Field } from "./Field";
-import { currentBattle, PLAYER } from "./Battle";
+import { currentBattle, PLAYER } from "../stores/BattleStore";
 import { Info } from "./Info";
-import { PrimaryButton } from "./PrimaryButton";
 import { useEffect } from "react";
-import { IBattle } from "./interfaces";
+import { IBattle } from "../interfaces";
 
 class OpponentBot {
     shotCells: any[] = [];
@@ -26,7 +25,7 @@ class OpponentBot {
     }
 
     shot = () => {
-        if(!this.battle.isGameStarted) return;
+        if (!this.battle.isGameStarted) return;
 
         const x = Math.ceil(Math.random() * 10);
         const y = Math.ceil(Math.random() * 10);
@@ -41,7 +40,7 @@ class OpponentBot {
     }
 }
 
-export const BattleView = observer(() => {
+export const Battle = observer(() => {
     useEffect(() => {
         const opponentBot = new OpponentBot(currentBattle);
         opponentBot.start();
@@ -52,26 +51,6 @@ export const BattleView = observer(() => {
     return (
         <Box direction="row" gap="large">
             <Box direction="row" gap="large">
-                <Box>
-                    <PrimaryButton
-                        onClick={() => {
-                            currentBattle.userField.addShip(Math.ceil(Math.random() * 4));
-                        }}
-                        label="Заполнить поле вручную"
-                    />
-                    <PrimaryButton
-                        onClick={() => {
-                            currentBattle.userField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
-                        }}
-                        label="Заполнить поле автоматически"
-                    />
-                    <PrimaryButton
-                        onClick={() => {
-                            currentBattle.userField.clearField()
-                        }}
-                        label="Очистить поле"
-                    />
-                </Box>
                 <Box align="center">
                     <p className="battle">Поле игрока</p>
                     <Field
@@ -79,10 +58,7 @@ export const BattleView = observer(() => {
                     // battle={currentBattle}
                     // player={PLAYER.USER}
                     />
-                    <Box direction="row">
-                        <Info field={currentBattle.userField} />
-                        <Info field={currentBattle.userField} dead />
-                    </Box>
+                    <Info field={currentBattle.userField} dead />
                 </Box>
             </Box>
             <Box align="center">
@@ -92,10 +68,7 @@ export const BattleView = observer(() => {
                     battle={currentBattle}
                     player={PLAYER.OPPONENT}
                 />
-                <Box direction="row">
-                    <Info field={currentBattle.opponentField} />
-                    <Info field={currentBattle.opponentField} dead />
-                </Box>
+                <Info field={currentBattle.opponentField} dead />
             </Box>
 
         </Box>

@@ -1,11 +1,11 @@
 import { Box } from 'grommet'
 import { observer } from "mobx-react-lite";
-import { GAME_STATE, IBattle, IField } from "./interfaces";
-import { Cell } from "./Cell/Cell";
+import { GAME_STATE, IBattle, IField } from "../interfaces";
+import { Cell } from "./Cell";
 import { useState } from "react";
-import { checkForOne } from "./Field/utils";
-import { isCellInCoords } from './Cell/cellUtils';
-import { PLAYER } from './Battle';
+import { checkForOne } from "../utils/utilsForField";
+import { isCellInCoords } from '../utils/utilsForCell';
+import { PLAYER } from '../stores/BattleStore';
 
 const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
 const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]

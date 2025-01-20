@@ -1,10 +1,11 @@
 import { Box } from "grommet";
 import { observer } from "mobx-react-lite";
-import { IField } from "./interfaces";
+import { IField } from "../interfaces";
+import { isFieldCorrect } from "../utils/utilsForField";
 
-export const Info = observer(({ field, dead = false } : {field: IField, dead? : boolean} ) => {
+export const Info = observer(({ field, dead = false }: { field: IField, dead?: boolean }) => {
     let shipCount = dead ? field.deadShipCount : field.shipCount
-    
+
     let reportArr = dead ? [`Убито кораблей: ${shipCount["all"]}`] : [`Кораблей на поле: ${shipCount["all"]}`];
 
     for (let key in shipCount) {
@@ -25,7 +26,7 @@ export const Info = observer(({ field, dead = false } : {field: IField, dead? : 
             margin={{ top: "large", left: "35px" }}
             pad="medium"
             round="small"
-            style={{color: dead ? "rgb(200, 10, 54)" : "black"}}
+            style={{ color: dead ? "rgb(200, 10, 54)" : "black" }}
         >
             {dead && <Box>Выстрелов: {field.shotCount}</Box>}
             {reportArr.map((item, index) => {
@@ -35,6 +36,11 @@ export const Info = observer(({ field, dead = false } : {field: IField, dead? : 
                     </Box>
                 )
             })}
+            {isFieldCorrect(shipCount) && !dead ?
+                <Box style={{ fontWeight: "bold" }}>Поле подходит для игры</Box> :
+                !dead ?
+                <Box style={{ fontWeight: "bold", color: "red" }}>Поле не подходит для игры</Box> : ""
+            }
         </Box>
     )
 })

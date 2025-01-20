@@ -1,13 +1,13 @@
 import { makeObservable, observable } from "mobx";
-import { FieldStore } from "./Field/FieldStore";
-import { GAME_STATE, IBattle } from "./interfaces";
+import { FieldStore } from "./FieldStore";
+import { IBattle } from "../interfaces";
 
 export enum PLAYER {
     USER = 'USER',
     OPPONENT = 'OPPONENT',
 }
 
-export class Battle implements IBattle {
+export class BattleStore implements IBattle {
     userField = new FieldStore();
     opponentField = new FieldStore();
     isGameStarted = false
@@ -23,7 +23,6 @@ export class Battle implements IBattle {
                 isGameStarted: observable,
 
             });
-        this.opponentField.gameState = GAME_STATE.SHOOT;
     }
 
     shoot = (player: PLAYER, row: number, col: number) => {
@@ -49,4 +48,4 @@ export class Battle implements IBattle {
     }
 }
 
-export const currentBattle = new Battle();
+export const currentBattle = new BattleStore();

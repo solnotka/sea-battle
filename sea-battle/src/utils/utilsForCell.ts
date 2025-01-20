@@ -1,7 +1,7 @@
-import { checkForOne, checkSpace, getCheckParams } from "../Field/utils"
+import { checkForOne, checkSpace, getCheckParams } from "./utilsForField"
 import { CELL_STATE, GAME_STATE, ICoord, IField } from "../interfaces"
 
-export const getBackgroundColor = (cell: CELL_STATE, gameState: GAME_STATE) => {
+export const getBaseColor = (cell: CELL_STATE, gameState: GAME_STATE) => {
     return (
         cell === CELL_STATE.WOUNDED ? "rgb(200, 10, 54)" :
             cell === CELL_STATE.DROWNED ? "rgb(77, 59, 64)" :
@@ -36,21 +36,7 @@ export const getPreviewColor = (field: number[][], start: ICoord, end: ICoord) =
     } else return "rgba(214, 29, 29, 0.5)"
 }
 
-export const isCellInCoords = (cell: ICoord, start: ICoord, end: ICoord): boolean => {
-    if (cell.x === end.x && cell.x === start.x) {
-        return (cell.y <= end.y && cell.y >= start.y) ||
-            (cell.y >= end.y && cell.y <= start.y);
-    }
-
-    if (cell.y === end.y && cell.y === start.y) {
-        return (cell.x <= end.x && cell.x >= start.x) ||
-            (cell.x >= end.x && cell.x <= start.x);
-    }
-
-    return false;
-}
-
-export const background = (
+export const getBackgroundColor = (
     field: IField,
     cell: CELL_STATE,
     rowIndex: number,
@@ -72,5 +58,19 @@ export const background = (
             return getSelectedColor(field.field, rowIndex, columnIndex)
         }
     }
-    return getBackgroundColor(cell, field.gameState)
+    return getBaseColor(cell, field.gameState)
+}
+
+export const isCellInCoords = (cell: ICoord, start: ICoord, end: ICoord): boolean => {
+    if (cell.x === end.x && cell.x === start.x) {
+        return (cell.y <= end.y && cell.y >= start.y) ||
+            (cell.y >= end.y && cell.y <= start.y);
+    }
+
+    if (cell.y === end.y && cell.y === start.y) {
+        return (cell.x <= end.x && cell.x >= start.x) ||
+            (cell.x >= end.x && cell.x <= start.x);
+    }
+
+    return false;
 }

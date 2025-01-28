@@ -1,5 +1,4 @@
 import { ButtonExtendedProps } from "grommet";
-import { PLAYER } from "./stores/BattleStore"
 
 export interface IField {
     field: number[][],
@@ -7,10 +6,12 @@ export interface IField {
     shotCount: number
     shipCount: IShipMap,
     deadShipCount: IShipMap,
+    wounds: { x: number, y: number }[] | [],
+    notShooted: { x: number, y: number }[] | [],
     addShip: (size: number) => void,
-    shoot: (row: number, column: number) => void,
     addShipByUser: (startRow : number, startCol : number, endRow : number, endCol : number) => void,
     removeShip: (row: number, column: number) => void,
+    shoot: (row: number, column: number) => void,
     shootShip: (row: number, column: number) => void,
     changeField: (arr: number[]) => void,
     clearField: () => void,
@@ -20,6 +21,9 @@ export interface IBattle {
     userField: IField,
     opponentField: IField,
     isGameStarted: boolean,
+    player: PLAYER,
+    winner: WINNER,
+    moveCount: number,
     shoot: (player: PLAYER, row: number, col: number) => void
 }
 
@@ -58,4 +62,15 @@ export enum GAME_STATE {
 export enum SHIP_DIRECTION {
     HORIZONTAL = "horizontal",
     VERTICAL = "vertical"
+}
+
+export enum PLAYER {
+    USER = 'USER',
+    OPPONENT = 'OPPONENT',
+}
+
+export enum WINNER {
+    NO_WINNER = "NO_WINNER",
+    USER = "USER",
+    OPPONENT = "OPPONENT",
 }

@@ -1,5 +1,5 @@
 import { SHIP_DIRECTION } from "../interfaces";
-import { checkForOne, collectWounds, checkSpace, getCheckParams, getShipCount } from "./utilsForField";
+import { checkForOne, collectWounds, checkSpace, getCheckParams, getShipCount, getWounds, isCoordInArray } from "./utilsForField";
 
 export const field_1 = [
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
@@ -138,7 +138,7 @@ test('getCheckParams 1', () => {
 })
 
 test('getCheckParams 2', () => {
-    expect(getCheckParams(5, 5, 6, 6)).toEqual(false)
+    expect(getCheckParams(5, 5, 6, 6)).toEqual([-1, -1, -1, SHIP_DIRECTION.VERTICAL])
 })
 
 test('getCheckParams 3', () => {
@@ -155,4 +155,20 @@ test('getCheckParams 5', () => {
 
 test('getCheckParams 6', () => {
     expect(getCheckParams(5, 5, 1, 5)).toEqual([1, 5, 5, SHIP_DIRECTION.VERTICAL])
+})
+
+test('getWounds', () => {
+    expect(getWounds(field_4)).toEqual([{x: 0, y: 1}, {x: 9, y: 0}])
+})
+
+test('isCoordInArray 1', () => {
+    expect(isCoordInArray({x: 2, y: 3}, [{x: 1, y: 1}, {x: 2, y: 3}])).toEqual(true)
+})
+
+test('isCoordInArray 2', () => {
+    expect(isCoordInArray({x: 2, y: 3}, [{x: 1, y: 1}, {x: 2, y: 2}])).toEqual(false)
+})
+
+test('isCoordInArray 3', () => {
+    expect(isCoordInArray({x: 2, y: 3}, [])).toEqual(false)
 })

@@ -1,6 +1,6 @@
 import { computed, makeObservable, observable } from "mobx";
 import { CELL_STATE, GAME_STATE, IField, SHIP_DIRECTION } from "../interfaces";
-import { collectWounds, checkSpace, getCheckParams, getShipCount } from "../utils/utilsForField";
+import { collectWounds, checkSpace, getCheckParams, getShipCount, getWounds, getNotShooted } from "../utils/utilsForField";
 
 export class FieldStore implements IField {
 
@@ -16,6 +16,8 @@ export class FieldStore implements IField {
                 shotCount: observable,
                 shipCount: computed,
                 deadShipCount: computed,
+                wounds: computed,
+                notShooted: computed
             })
     }
 
@@ -27,6 +29,14 @@ export class FieldStore implements IField {
     get deadShipCount() {
 
         return getShipCount(this.field, [CELL_STATE.DROWNED])
+    }
+
+    get wounds() {
+        return getWounds(this.field)
+    }
+
+    get notShooted() {
+        return getNotShooted(this.field)
     }
 
     addShip(size: number) {
@@ -175,7 +185,7 @@ export class FieldStore implements IField {
             this.shootShip(rowIndex, columnIndex);
             this.shotCount++;
             return true;
-        }
+        } else return true;
     }
 }
 

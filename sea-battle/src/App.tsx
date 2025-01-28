@@ -7,18 +7,46 @@ import { Info } from './components/Info';
 import { observer } from 'mobx-react-lite';
 import { Battle } from './components/Battle';
 import { currentBattle } from './stores/BattleStore';
-import { GAME_STATE } from './interfaces';
+import { GAME_STATE, WINNER } from './interfaces';
 import { isFieldCorrect } from './utils/utilsForField';
 import { Modal } from './components/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { StartModal } from './components/StartModal';
+import { DefeatModal, VictoryModal } from './components/VictoryModal';
 
 export const App = observer(() => {
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [gameEndModalOpen, setGameEndModalOpen] = useState(false);
+
+  const HandleModalClose = () => {
+    setGameEndModalOpen(false);
+    currentBattle.isGameStarted = false;
+    currentBattle.moveCount = 0;
+    currentBattle.userField.shotCount = 0;
+    currentBattle.userField.clearField();
+    currentBattle.opponentField.shotCount = 0;
+    currentBattle.opponentField.clearField();
+  }
+
+  useEffect(() => {
+    if (currentBattle.winner !== WINNER.NO_WINNER) {
+      setGameEndModalOpen(true)
+    }
+  }, [currentBattle.winner])
 
   return (
     <div className="App">
       <Box direction="row">
+        {currentBattle.winner === WINNER.USER ?
+          <Modal open={gameEndModalOpen}>
+            <VictoryModal battle={currentBattle} onClick={HandleModalClose} />
+          </Modal> :
+          currentBattle.winner === WINNER.OPPONENT ?
+            <Modal open={gameEndModalOpen}>
+              <DefeatModal battle={currentBattle} onClick={HandleModalClose} />
+            </Modal> : ""
+        }
         {currentBattle.isGameStarted ? <Battle /> : <Field viewField={currentField} />
         }
         {!currentBattle.isGameStarted && <Box justify="center">
@@ -56,6 +84,7 @@ export const App = observer(() => {
         <PrimaryButton
           onClick={() => {
             currentBattle.isGameStarted = false;
+            currentBattle.moveCount = 0;
             currentBattle.userField.shotCount = 0;
             currentBattle.userField.clearField();
             currentBattle.opponentField.shotCount = 0;
@@ -69,6 +98,7 @@ export const App = observer(() => {
             onClick={() => {
               if (isFieldCorrect(currentField.shipCount)) {
                 currentBattle.isGameStarted = true;
+                currentBattle.moveCount = 0;
                 currentBattle.userField = currentField;
                 currentBattle.userField.gameState = GAME_STATE.INIT;
                 currentBattle.userField.shotCount = 0;
@@ -83,23 +113,9 @@ export const App = observer(() => {
 
           <Modal
             open={modalOpen}>
-            <Box gap="medium">
-              <Text>Вот сколько кораблей должно быть на поле:</Text>
-              <Box style={{ marginLeft: "25px"}}>
-                <Text>Кораблей на поле: 10</Text>
-                <Text>Кораблей размера 4: 1</Text>
-                <Text>Кораблей размера 3: 2</Text>
-                <Text>Кораблей размера 2: 3</Text>
-                <Text>Кораблей размера 1: 4</Text>
-              </Box>
-              <Text>Поставьте корабли правильно — и сможете начать игру.</Text>
-              <PrimaryButton
-                label="Закрыть окно"
-                onClick={() => setModalOpen(false)}
-                style={{alignSelf: "center"}}
-              />
-            </Box>
+            <StartModal onClick={() => setModalOpen(false)} />
           </Modal>
+
         </Box>
       }
       {!currentBattle.isGameStarted && <Box direction="row" alignContent='between'>

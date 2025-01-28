@@ -5,7 +5,7 @@ import { Cell } from "./Cell";
 import { useState } from "react";
 import { checkForOne } from "../utils/utilsForField";
 import { isCellInCoords } from '../utils/utilsForCell';
-import { PLAYER } from '../stores/BattleStore';
+import { PLAYER } from '../interfaces';
 
 const fieldHead = ["А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К"];
 const fieldLeft = ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -28,7 +28,7 @@ export const Field = observer(({ viewField, battle, player }:
             }
         } else if (viewField.gameState === GAME_STATE.REMOVE_SHIP) {
             viewField.removeShip(row, column)
-        } else if (viewField.gameState === GAME_STATE.SHOOT && battle && player) {
+        } else if (viewField.gameState === GAME_STATE.SHOOT && battle && player === battle.player) {
             battle.shoot(player, row, column);
         }
     }

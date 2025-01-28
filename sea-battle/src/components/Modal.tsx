@@ -17,11 +17,12 @@ export const Modal = ({ children, open }: { children: ReactNode, open: boolean }
     return createPortal(
         <dialog ref={dialog} style={{
             borderRadius: "10px",
-            borderColor:"rgb(6, 2, 49)",
+            borderColor: "rgb(6, 2, 49)",
             borderWidth: "3px"
         }}
         >
-            {children}</dialog>,
+            {children}
+        </dialog>,
         document.getElementById("modal")!
     )
 }

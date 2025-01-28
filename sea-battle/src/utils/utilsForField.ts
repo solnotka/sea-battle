@@ -19,7 +19,7 @@ export const checkForOne = (field: number[][], row: number, column: number) => {
     return true;
 };
 
-export const getCheckParams = (startRow: number, startCol: number, endRow: number, endCol: number) :
+export const getCheckParams = (startRow: number, startCol: number, endRow: number, endCol: number):
     [number, number, number, SHIP_DIRECTION] => {
 
     let size = 0;
@@ -70,7 +70,7 @@ export const checkSpace = (field: number[][], row: number, column: number, size:
 
 export const getShipCount = (field: number[][], ind: number[]) => {
 
-    let shipMap: IShipMap = {"all" : 0};
+    let shipMap: IShipMap = { "all": 0 };
     let count = 0;
     let size = 0;
 
@@ -124,14 +124,14 @@ export const getShipCount = (field: number[][], ind: number[]) => {
     return shipMap
 }
 
-export const isFieldCorrect = (shipMap : IShipMap) => {
+export const isFieldCorrect = (shipMap: IShipMap) => {
     if (shipMap["all"] === 10 &&
         shipMap[1] && shipMap[1] === 4 &&
         shipMap[2] && shipMap[2] === 3 &&
         shipMap[3] && shipMap[3] === 2 &&
         shipMap[4] && shipMap[4] === 1) {
-            return true
-        } else return false    
+        return true
+    } else return false
 }
 
 export const collectWounds = (field: number[][], row: number, column: number, rowDirection: boolean, forward: boolean) => {
@@ -158,4 +158,44 @@ export const collectWounds = (field: number[][], row: number, column: number, ro
         }
     }
     return lineWounds
+}
+
+export const getWounds = (field: number[][]) => {
+    let wounds = [];
+
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            if (field[row][col] === CELL_STATE.WOUNDED) {
+                wounds.push({ x: row, y: col })
+            }
+        }
+    }
+    return wounds
+}
+
+export const getNotShooted = (field: number[][]) => {
+    let notShooted = [];
+
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            if (
+                field[row][col] === CELL_STATE.OCCUPIED ||
+                field[row][col] === CELL_STATE.EMPTY
+            )
+                notShooted.push({ x: row, y: col })
+        }
+    }
+    return notShooted
+}
+
+export const isCoordInArray = (coord: { x: number, y: number }, arr: { x: number, y: number }[] | []) => {
+    if (!arr) {
+        return false
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        if (coord.x === arr[i].x && coord.y === arr[i].y) return true
+    }
+
+    return false
 }

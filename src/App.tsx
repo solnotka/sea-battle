@@ -29,11 +29,11 @@ export const App = observer(() => {
     currentBattle.opponentField.clearField();
   }
 
-  useEffect(() => {
-    if (currentBattle.winner !== WINNER.NO_WINNER) {
-      setGameEndModalOpen(true)
-    }
-  }, [currentBattle.winner])
+  // useEffect(() => {
+  //   if (currentBattle.winner !== WINNER.NO_WINNER) {
+  //     setGameEndModalOpen(true)
+  //   }
+  // }, [currentBattle.winner])
 
   return (
     <div className="App">

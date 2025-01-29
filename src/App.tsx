@@ -2,7 +2,7 @@ import './App.css';
 import { Field } from './components/Field';
 import { PrimaryButton } from './components/PrimaryButton';
 import { currentField } from './stores/FieldStore';
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Info } from './components/Info';
 import { observer } from 'mobx-react-lite';
 import { Battle } from './components/Battle';
@@ -121,20 +121,6 @@ export const App = observer(() => {
       {!currentBattle.isGameStarted && <Box direction="row" alignContent='between'>
         <Info field={currentField} />
       </Box>}
-      {/* <Box>
-        {
-          currentField.field.map((item, rowIndex) => {
-            return (
-              <Box
-                key={rowIndex}
-                direction="row"
-              >
-                [{item.join(", ")}]
-              </Box>
-            )
-          })
-        }
-      </Box> */}
     </div >
   );
 })

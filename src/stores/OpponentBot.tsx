@@ -51,6 +51,7 @@ export class OpponentBot {
 
                 } else wound = wounds[Math.floor(Math.random() * wounds.length)]
             }
+            
         } else {
             const randomCoord = freeCells[Math.floor(Math.random() * freeCells.length)];
 

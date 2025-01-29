@@ -10,7 +10,7 @@ import { currentBattle } from './stores/BattleStore';
 import { GAME_STATE, WINNER } from './interfaces';
 import { isFieldCorrect } from './utils/utilsForField';
 import { Modal } from './components/Modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StartModal } from './components/StartModal';
 import { DefeatModal, VictoryModal } from './components/VictoryModal';
 
@@ -18,6 +18,7 @@ export const App = observer(() => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [gameEndModalOpen, setGameEndModalOpen] = useState(false);
+  const winner = currentBattle.winner
 
   const HandleModalClose = () => {
     setGameEndModalOpen(false);
@@ -29,20 +30,20 @@ export const App = observer(() => {
     currentBattle.opponentField.clearField();
   }
 
-  // useEffect(() => {
-  //   if (currentBattle.winner !== WINNER.NO_WINNER) {
-  //     setGameEndModalOpen(true)
-  //   }
-  // }, [currentBattle.winner])
+  useEffect(() => {
+    if (winner !== WINNER.NO_WINNER) {
+      setGameEndModalOpen(true)
+    }
+  }, [winner])
 
   return (
     <div className="App">
       <Box direction="row">
-        {currentBattle.winner === WINNER.USER ?
+        {winner === WINNER.USER ?
           <Modal open={gameEndModalOpen}>
             <VictoryModal battle={currentBattle} onClick={HandleModalClose} />
           </Modal> :
-          currentBattle.winner === WINNER.OPPONENT ?
+          winner === WINNER.OPPONENT ?
             <Modal open={gameEndModalOpen}>
               <DefeatModal battle={currentBattle} onClick={HandleModalClose} />
             </Modal> : ""

@@ -10,7 +10,7 @@ import { currentBattle } from './stores/BattleStore';
 import { GAME_STATE, WINNER } from './interfaces';
 import { isFieldCorrect } from './utils/utilsForField';
 import { Modal } from './components/Modal';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StartModal } from './components/StartModal';
 import { DefeatModal, VictoryModal } from './components/VictoryModal';
 

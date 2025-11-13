@@ -1,0 +1,5 @@
+fetch('https://api.litres.ru/foundation/api/arts/personal-recommendations')
+    .then(item => item.json())
+    .then(item => item.payload.data.map((book) => book.title))
+    .then(titles => console.log(titles))
+    .catch(e => console.log("error"))

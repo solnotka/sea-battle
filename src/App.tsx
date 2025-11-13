@@ -50,35 +50,35 @@ export const App = observer(() => {
         }
         {currentBattle.isGameStarted ? <Battle /> : <Field viewField={currentField} />
         }
-        {!currentBattle.isGameStarted && <Box justify="center">
-          <Box width="35px"></Box>
-          <PrimaryButton
-            onClick={() => {
-              currentField.gameState = GAME_STATE.INIT;
-              currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
-            }}
-            label="Заполнить поле автоматически"
-          />
-          <PrimaryButton
-            onClick={() => {
-              currentField.gameState = GAME_STATE.ADD_SHIP;
-            }}
-            label="Заполнить поле вручную"
-          />
-          <PrimaryButton
-            onClick={() => {
-              currentField.gameState = GAME_STATE.REMOVE_SHIP;
-            }}
-            label="Перейти в режим удаления кораблей"
-          />
-          <PrimaryButton
-            onClick={() => {
-              currentField.gameState = GAME_STATE.INIT;
-              currentField.clearField()
-            }}
-            label="Очистить поле"
-          />
-        </Box>
+        {!currentBattle.isGameStarted &&
+          <Box justify="center">
+            <PrimaryButton
+              onClick={() => {
+                currentField.gameState = GAME_STATE.INIT;
+                currentField.changeField([4, 3, 3, 2, 2, 2, 1, 1, 1, 1]);
+              }}
+              label="Заполнить поле автоматически"
+            />
+            <PrimaryButton
+              onClick={() => {
+                currentField.gameState = GAME_STATE.ADD_SHIP;
+              }}
+              label="Заполнить поле вручную"
+            />
+            <PrimaryButton
+              onClick={() => {
+                currentField.gameState = GAME_STATE.REMOVE_SHIP;
+              }}
+              label="Перейти в режим удаления кораблей"
+            />
+            <PrimaryButton
+              onClick={() => {
+                currentField.gameState = GAME_STATE.INIT;
+                currentField.clearField()
+              }}
+              label="Очистить поле"
+            />
+          </Box>
         }
       </Box>
       {currentBattle.isGameStarted ?

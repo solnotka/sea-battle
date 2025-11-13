@@ -101,17 +101,17 @@ export class FieldStore implements IField {
                 for (
                     let i = rowDirection ? column : row;
                     forward ? i < 10 : i >= 0;
-                    forward ? i++ : i--
+                    forward ? i++ : i-- // Упихиваем четыре цикла в один
                 ) {
                     if ((rowDirection && i === column) || (!rowDirection && i === row)) {
-                        continue;
+                        continue; // начальную клеточку уже выше очистили
                     } else if ((rowDirection && this.field[row][i] === CELL_STATE.EMPTY) ||
                         (!rowDirection && this.field[i][column] === CELL_STATE.EMPTY)) {
-                        break;
+                        break; // наткнулись на пустую клеточку, заканчиваем цикл
                     } else if (rowDirection) {
                         this.field[row][i] = CELL_STATE.EMPTY;
                     } else if (!rowDirection) {
-                        this.field[i][column] = CELL_STATE.EMPTY;
+                        this.field[i][column] = CELL_STATE.EMPTY; // если клеточка занята, очищаем
                     }
                 }
             }
@@ -120,7 +120,7 @@ export class FieldStore implements IField {
                 for (let lean of [true, false]) {
                     handleLine(row, column, boo, lean)
                 }
-            }
+            } // Последовательно вызываем четыре цикла для четырех разных направлений
 
         }
     }

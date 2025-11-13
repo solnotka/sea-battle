@@ -1,1 +1,3 @@
-Морской бой. React, MobX, TypeScript
+Морской бой
+Стек: React, TypeScript, MobX
+

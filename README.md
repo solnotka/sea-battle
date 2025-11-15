@@ -11,7 +11,7 @@
 
 **Потестировать онлайн:** <https://sea-battle-three.vercel.app/>  
   
-**Как запустить локально:** 
+**Запустить локально:** 
 ```
 npm install
 npm run start
